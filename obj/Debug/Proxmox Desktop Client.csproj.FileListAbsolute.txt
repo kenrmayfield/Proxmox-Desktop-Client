@@ -97,3 +97,7 @@ C:\Users\matth\RiderProjects\Proxmox Desktop Client\Proxmox Desktop Client\bin\D
 C:\Users\matth\RiderProjects\Proxmox Desktop Client\Proxmox Desktop Client\bin\Debug\Microsoft.Web.WebView2.Core.xml
 C:\Users\matth\RiderProjects\Proxmox Desktop Client\Proxmox Desktop Client\bin\Debug\Microsoft.Web.WebView2.WinForms.xml
 C:\Users\matth\RiderProjects\Proxmox Desktop Client\Proxmox Desktop Client\bin\Debug\Microsoft.Web.WebView2.Wpf.xml
+C:\Users\matth\RiderProjects\Proxmox Desktop Client\Proxmox Desktop Client\bin\Debug\NetBase32.dll
+C:\Users\matth\RiderProjects\Proxmox Desktop Client\Proxmox Desktop Client\bin\Debug\Otp.NET.dll
+C:\Users\matth\RiderProjects\Proxmox Desktop Client\Proxmox Desktop Client\bin\Debug\Variel.Security.Otp.dll
+C:\Users\matth\RiderProjects\Proxmox Desktop Client\Proxmox Desktop Client\bin\Debug\NetBase32.xml

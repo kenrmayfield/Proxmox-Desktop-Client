@@ -1,198 +1,211 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Proxmox_Desktop_Client.Classes;
 using Proxmox_Desktop_Client.Classes.consoles;
 using Proxmox_Desktop_Client.Classes.pveAPI;
 using Proxmox_Desktop_Client.Classes.pveAPI.objects;
 
-namespace Proxmox_Desktop_Client;
-
-public partial class MainPanel : Form
+namespace Proxmox_Desktop_Client
 {
-    private ApiClient _Api;
-    private UserPermissions _Permissions;
-    
-    public MainPanel()
+    public partial class MainPanel : Form
     {
-        Load += RefreshContent;
-        _Api = Program._Api;
-        _Permissions = Program._Permissions;
-        InitializeComponent();
-        Show();
-    }
+        private readonly ApiClient _api;
+        private readonly UserPermissions _permissions;
 
-    private async void RefreshContent(object sender, EventArgs e)
-    {
-        // Get Permissions
-        await _Api.GetPermissionsAsync();
-        // Collect Information
-        await GetNodesAndMachinesAsync();
-        // Process Machines
-        ProcessMachineList();
-    }
-
-    public async Task GetNodesAndMachinesAsync()
-    {
-        var allMachines = new List<MachineData>();
-
-        // Fetch the list of nodes
-        string nodesJson = await _Api.GetAsync("nodes");
-        if (nodesJson != null)
+        public MainPanel()
         {
-            var nodesRoot = JsonConvert.DeserializeObject<RootObject<NodeData>>(nodesJson);
+            Load += RefreshContent;
+            _api = Program._Api;
+            _permissions = Program._Permissions;
+            InitializeComponent();
+            Show();
+        }
 
-            foreach (var node in nodesRoot.Data)
+        private async void RefreshContent(object sender, EventArgs e)
+        {
+            await _api.GetPermissionsAsync();
+            await GetNodesAndMachinesAsync();
+            ProcessMachineList();
+        }
+
+        public async Task GetNodesAndMachinesAsync()
+        {
+            var allMachines = new List<MachineData>();
+            string nodesJson = await _api.GetAsync("nodes");
+
+            if (nodesJson != null)
             {
-                // Fetch LXC machines
-                string lxcPath = $"nodes/{node.Node}/lxc";
-                string lxcJson = await _Api.GetAsync(lxcPath);
-                if (lxcJson != null)
-                {
-                    var lxcMachinesRoot = JsonConvert.DeserializeObject<RootObject<MachineData>>(lxcJson);
-                    foreach (var machine in lxcMachinesRoot.Data)
-                    {
-                        machine.NodeName = node.Node;
-                        allMachines.Add(machine);
-                    }
-                }
+                var nodesRoot = JsonConvert.DeserializeObject<RootObject<NodeData>>(nodesJson);
 
-                // Fetch QEMU machines
-                string qemuPath = $"nodes/{node.Node}/qemu";
-                string qemuJson = await _Api.GetAsync(qemuPath);
-                if (qemuJson != null)
+                foreach (var node in nodesRoot.Data)
                 {
-                    var qemuMachinesRoot = JsonConvert.DeserializeObject<RootObject<MachineData>>(qemuJson);
-                    foreach (var machine in qemuMachinesRoot.Data)
-                    {
-                        machine.NodeName = node.Node;
-                        allMachines.Add(machine);
-                    }
-                    
+                    await AddMachinesFromNodeAsync(node, "lxc", allMachines);
+                    await AddMachinesFromNodeAsync(node, "qemu", allMachines);
+                }
+            }
+
+            _api.Machines = allMachines.OrderBy(data => data.Vmid).ToList();
+        }
+
+        private async Task AddMachinesFromNodeAsync(NodeData node, string type, List<MachineData> allMachines)
+        {
+            string path = $"nodes/{node.Node}/{type}";
+            string json = await _api.GetAsync(path);
+
+            if (json != null)
+            {
+                var machinesRoot = JsonConvert.DeserializeObject<RootObject<MachineData>>(json);
+                foreach (var machine in machinesRoot.Data)
+                {
+                    machine.NodeName = node.Node;
+                    allMachines.Add(machine);
                 }
             }
         }
 
-        _Api.Machines = allMachines;
-    }
-
-    private void AddMachine2Panel(int id, MachineData machineData)
-    {
-     
-        // Define the size of each GroupBox
-        int groupBoxWidth = 150;
-        int groupBoxHeight = 150;
-        int padding = 20; // Space between GroupBoxes
-        int margin = 10; // Margin from the left edge
-        int topMargin = 10; // Margin from the top edge
-
-        // Fixed number of columns
-        int columns = 4;
-
-        // Create a new GroupBox
-        System.Windows.Forms.GroupBox newGroupBox = new System.Windows.Forms.GroupBox();
-        newGroupBox.Size = new System.Drawing.Size(groupBoxWidth, groupBoxHeight);
-        newGroupBox.Text = machineData.Name + " ("+machineData.Type+")";
-
-        // Determine the position based on the number of existing GroupBoxes
-        int index = this.panel_machines.Controls.Count;
-        int row = index / columns;
-        int column = index % columns;
-
-        int xPosition = margin + column * (groupBoxWidth + padding);
-        int yPosition = topMargin + row * (groupBoxHeight + padding);
-
-        newGroupBox.Location = new System.Drawing.Point(xPosition, yPosition);
-
-        // Create a new PictureBox for dots
-        System.Windows.Forms.PictureBox newPbDots = new System.Windows.Forms.PictureBox();
-        newPbDots.Size = new System.Drawing.Size(20, 20);
-        newPbDots.Location = new System.Drawing.Point(119, 119);
-        newPbDots.Image = global::Proxmox_Desktop_Client.Properties.Resources.icons_dots;
-        newPbDots.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-
-        // Create a ContextMenuStrip for the PictureBox
-        System.Windows.Forms.ContextMenuStrip contextMenu = new System.Windows.Forms.ContextMenuStrip();
-        System.Windows.Forms.ToolStripMenuItem menuItem1 = new System.Windows.Forms.ToolStripMenuItem("NoVNC");
-        System.Windows.Forms.ToolStripMenuItem menuItem2 = new System.Windows.Forms.ToolStripMenuItem("Spice");
-        System.Windows.Forms.ToolStripMenuItem menuItem3 = new System.Windows.Forms.ToolStripMenuItem("xTermJS");
-        contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { menuItem1, menuItem2, menuItem3});
-
-        // Assign the ContextMenuStrip to the PictureBox
-        newPbDots.ContextMenuStrip = contextMenu;
-
-        // Event handlers for menu items
-        menuItem1.Click += (sender, e) => NoVNC_Client(machineData);
-        menuItem2.Click += (sender, e) => spice_Client(machineData.Vmid);
-        menuItem3.Click += (sender, e) => xTermJS_Client(machineData);
-
-        // Handle MouseClick event to show context menu on left click
-        newPbDots.MouseClick += (sender, e) =>
+        private async void AddMachine2Panel(int id, MachineData machineData)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left || e.Button == System.Windows.Forms.MouseButtons.Right)
+            const int groupBoxWidth = 150;
+            const int groupBoxHeight = 150;
+            const int padding = 20;
+            const int margin = 10;
+            const int topMargin = 10;
+            const int columns = 4;
+
+            var newGroupBox = new GroupBox
             {
-                contextMenu.Show(newPbDots, e.Location);
+                Size = new System.Drawing.Size(groupBoxWidth, groupBoxHeight),
+                Text = $"{machineData.Name} ( {machineData.Vmid} )"
+            };
+
+            int index = panel_machines.Controls.Count;
+            int row = index / columns;
+            int column = index % columns;
+
+            newGroupBox.Location = new System.Drawing.Point(
+                margin + column * (groupBoxWidth + padding),
+                topMargin + row * (groupBoxHeight + padding)
+            );
+
+            var newPbDots = new PictureBox
+            {
+                Size = new System.Drawing.Size(20, 20),
+                Location = new System.Drawing.Point(119, 119),
+                Image = global::Proxmox_Desktop_Client.Properties.Resources.icons_dots,
+                SizeMode = PictureBoxSizeMode.StretchImage
+            };
+
+            var contextMenu = new ContextMenuStrip();
+            var menuItem1 = new ToolStripMenuItem("NoVNC");
+            var menuItem2 = new ToolStripMenuItem("Spice");
+            var menuItem3 = new ToolStripMenuItem("xTermJS");
+
+            menuItem1.Click += (sender, e) => NoVNC_Client(machineData);
+            menuItem2.Click += (sender, e) => Spice_Client(machineData.Vmid);
+            menuItem3.Click += (sender, e) => xTermJS_Client(machineData);
+            
+            menuItem2.Enabled = false;
+            
+            contextMenu.Items.AddRange(new ToolStripItem[] { menuItem1, menuItem2, menuItem3 });
+            newPbDots.ContextMenuStrip = contextMenu;
+
+            newPbDots.MouseClick += (sender, e) =>
+            {
+                if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right)
+                {
+                    contextMenu.Show(newPbDots, e.Location);
+                }
+            };
+
+            var newPbImg = new PictureBox
+            {
+                Size = new System.Drawing.Size(126, 126),
+                Location = new System.Drawing.Point(13, 13),
+                Image = machineData.Type == "lxc" ? 
+                        global::Proxmox_Desktop_Client.Properties.Resources.lxc_logo : 
+                        global::Proxmox_Desktop_Client.Properties.Resources.vm_logo,
+                SizeMode = PictureBoxSizeMode.StretchImage
+            };
+
+            newGroupBox.Controls.Add(newPbDots);
+            newGroupBox.Controls.Add(newPbImg);
+            
+            panel_machines.Controls.Add(newGroupBox);
+            
+            if(machineData.Type == "qemu")
+            {
+                menuItem2.Enabled = (bool) await CheckSpiceAble(machineData);
             }
-        };
-
-        // Create a new PictureBox for image
-        System.Windows.Forms.PictureBox newPbImg = new System.Windows.Forms.PictureBox();
-        newPbImg.Size = new System.Drawing.Size(126, 126);
-        newPbImg.Location = new System.Drawing.Point(13, 13);
-        newPbImg.Image = global::Proxmox_Desktop_Client.Properties.Resources.lxc_logo;
-        newPbImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-
-        // Add PictureBoxes to the GroupBox
-        newGroupBox.Controls.Add(newPbDots);
-        newGroupBox.Controls.Add(newPbImg);
-
-        // Add the GroupBox to the panel
-        this.panel_machines.Controls.Add(newGroupBox);
-    }
-    
-    private void NoVNC_Client(MachineData machineData)
-    {
-        new NoVNCClient(_Api, machineData);
-    }
-    private void xTermJS_Client(MachineData machineData)
-    {
-        new NoVNCClient(_Api, machineData);
-    }
-    
-    private void spice_Client(int vmid)
-    {
-        SpiceClient spiceClient = new SpiceClient(_Api, _Api.Machines.FirstOrDefault(m => m.Vmid == vmid));
-        spiceClient.RequestSpiceConnection();
-    }
-    
-    private void ProcessMachineList()
-    {
-        foreach (var machine in _Api.Machines)
-        {
-            AddMachine2Panel(machine.Vmid, machine);
+            
         }
-    }
-    
-    private void action_logout(object sender, EventArgs e)
-    {
-        this.Close();
-    }
-    private void action_exitApplication(object sender, EventArgs e)
-    {
-        Application.Exit();
-    }
-    
-    protected override void OnFormClosing(FormClosingEventArgs e)
-    {
-        base.OnFormClosing(e);
-        
-        ClientLogin TheWindow = (ClientLogin) Program._Panels["ClientLogin"];
-        TheWindow.Show();
+
+        private void NoVNC_Client(MachineData machineData)
+        {
+            new NoVNCClient(_api, machineData);
+        }
+
+        private void xTermJS_Client(MachineData machineData)
+        {
+            new NoVNCClient(_api, machineData);
+        }
+
+        private void Spice_Client(int vmid)
+        {
+            var spiceClient = new SpiceClient(_api, _api.Machines.FirstOrDefault(m => m.Vmid == vmid));
+            spiceClient.RequestSpiceConnection();
+        }
+
+        private async Task<bool> CheckSpiceAble(MachineData Machine)
+        {
+            string node = Machine.NodeName;
+            string vmid = Machine.Vmid.ToString();
+            
+            // Fetch the JSON string from the API
+            string jsonString = await _api.GetAsync($"nodes/{node}/qemu/{vmid}/status/current");
+            
+            // Parse the JSON string
+            var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(jsonString);
+            
+            // Try to extract the Spice value
+            var spiceToken = jsonObject["data"]?["spice"];
+            
+            // If Spice does not exist or is not equal to 1, return false
+            if (spiceToken == null || (int)spiceToken != 1 || (string)spiceToken != "1")
+            {
+                return false;
+            }
+            
+            // Return true if Spice equals 1
+            return true;
+        }
+
+        private void ProcessMachineList()
+        {
+            foreach (var machine in _api.Machines)
+            {
+                AddMachine2Panel(machine.Vmid, machine);
+            }
+        }
+
+        private void ActionLogout(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void ActionExitApplication(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            var theWindow = (ClientLogin)Program._Panels["ClientLogin"];
+            theWindow.Show();
+        }
     }
 }

@@ -5,7 +5,9 @@ using System.Net.Http.Headers;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Newtonsoft.Json;
+using OtpNet;
 using Proxmox_Desktop_Client.Classes.pveAPI.objects;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -31,12 +33,16 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
             // Initialize HttpClient
             var handler = new HttpClientHandler();
             handler.UseCookies = false;
-            handler.ServerCertificateCustomValidationCallback = (requestMessage, certificate, chain, policyErrors) => skipSSL;
-
+            if(skipSSL)
+            {
+                handler.ServerCertificateCustomValidationCallback = (requestMessage, certificate, chain, policyErrors) => true;    
+            }
+            
             _httpClient = new HttpClient(handler)
             {
                 BaseAddress = new Uri($"https://{server}:{port}/api2/json/")
             };
+            
         }
 
         public async Task<List<RealmData>> GetRealmsAsync()
@@ -44,6 +50,7 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
             try
             {
                 var response = await _httpClient.GetAsync("access/domains").ConfigureAwait(false);
+                Console.WriteLine(response);
                 response.EnsureSuccessStatusCode();
 
                 var jsonData = JsonConvert.DeserializeObject<Dictionary<string, List<RealmData>>>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
@@ -69,7 +76,7 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
                 password = password,
                 realm = realm
             };
-
+            
             var contentOTP = new
             {
                 username = username,
@@ -96,10 +103,57 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
                     CSRFPreventionToken = apiResponse.data.CSRFPreventionToken,
                     username = apiResponse.data.username
                 };
+                
+                if (_apiTicket.ticket.Contains("PVE:!tfa!") && (otp == null || otp == String.Empty))
+                {
+                    MessageBox.Show("This account has TOTP enabled. You must enter your TOTP key.", "Login Failure");
+                    return false;
+                } else if (_apiTicket.ticket.Contains("PVE:!tfa!") && (otp != null || otp != String.Empty))
+                {
+                    return await LoginTotpAsync(_apiTicket, otp);
+                }
+                
                 return true;
+                
             }
 
-            Console.WriteLine("Login failed: " + await response.Content.ReadAsStringAsync());
+            MessageBox.Show("There were problems logging in... Please try again.", "Login Failure");
+            return false;
+        }
+
+        public async Task<bool> LoginTotpAsync(ApiTicket apiTicket, string otpCode)
+        {
+
+   
+            var contentOtp = new Dictionary<string, string>();
+            contentOtp.Add("username", _apiTicket.username);
+            contentOtp.Add("password", "totp:" + otpCode);
+            contentOtp.Add("tfa-challenge", _apiTicket.ticket);
+            
+            // Serialize the object to JSON
+            var jsonContent = String.Empty;
+            
+            jsonContent = JsonConvert.SerializeObject(contentOtp);
+            
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("access/ticket", httpContent);
+            
+            Console.WriteLine(JsonConvert.SerializeObject(response.Content));
+            if (response.IsSuccessStatusCode)
+            {
+                dynamic apiResponse = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+                _apiTicket = new ApiTicket
+                {
+                    ticket = apiResponse.data.ticket,
+                    CSRFPreventionToken = apiResponse.data.CSRFPreventionToken,
+                    username = apiResponse.data.username
+                };
+                
+                return true;
+                
+            }
+
+            MessageBox.Show("There were problems logging in... Please try again.", "Login Failure");
             return false;
         }
 

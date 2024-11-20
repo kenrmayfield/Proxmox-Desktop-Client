@@ -137,7 +137,7 @@
             this.checkBox_otp.Text = "OTP";
             this.checkBox_otp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.checkBox_otp.UseVisualStyleBackColor = true;
-            this.checkBox_otp.Click += new System.EventHandler(this.click_otp);
+            this.checkBox_otp.Click += new System.EventHandler(this.ClickOtp);
             // 
             // checkBox_remember
             // 
@@ -263,7 +263,7 @@
             this.button_check.TabIndex = 4;
             this.button_check.Text = "CHECK";
             this.button_check.UseVisualStyleBackColor = false;
-            this.button_check.Click += new System.EventHandler(this.click_checkServer);
+            this.button_check.Click += new System.EventHandler(this.ClickCheckServer);
             // 
             // panel_server
             // 

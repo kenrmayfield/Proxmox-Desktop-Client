@@ -74,14 +74,14 @@ partial class MainPanel
         this.File_childItemLogout.Name = "File_childItemLogout";
         this.File_childItemLogout.Size = new System.Drawing.Size(112, 22);
         this.File_childItemLogout.Text = "Logout";
-        this.File_childItemLogout.Click += new System.EventHandler(this.action_logout);
+        this.File_childItemLogout.Click += new System.EventHandler(this.ActionLogout);
         // 
         // File_childItemExit
         // 
         this.File_childItemExit.Name = "File_childItemExit";
         this.File_childItemExit.Size = new System.Drawing.Size(112, 22);
         this.File_childItemExit.Text = "Exit";
-        this.File_childItemExit.Click += new System.EventHandler(this.action_exitApplication);
+        this.File_childItemExit.Click += new System.EventHandler(this.ActionExitApplication);
         // 
         // MainPanel
         // 
