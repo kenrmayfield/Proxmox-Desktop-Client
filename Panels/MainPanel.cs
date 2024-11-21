@@ -207,5 +207,18 @@ namespace Proxmox_Desktop_Client
             var theWindow = (ClientLogin)Program._Panels["ClientLogin"];
             theWindow.Show();
         }
+
+        private void openSpiceProxyPanel(object sender, EventArgs e)
+        {
+            if (Program._Panels.ContainsKey("SpiceProxyPanel"))
+            {
+                
+            } else
+            {
+                
+            }
+            
+            
+        }
     }
 }

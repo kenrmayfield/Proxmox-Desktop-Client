@@ -3,9 +3,9 @@ using System.Windows.Forms;
 
 namespace Proxmox_Desktop_Client;
 
-public partial class SpiceConfig : Form
+public partial class SpiceProxyPanel : Form
 {
-    public SpiceConfig()
+    public SpiceProxyPanel()
     {
         InitializeComponent();
     }

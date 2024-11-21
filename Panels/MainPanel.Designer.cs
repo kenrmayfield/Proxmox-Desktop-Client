@@ -37,6 +37,8 @@ partial class MainPanel
         this.rootItem_File = new System.Windows.Forms.ToolStripMenuItem();
         this.File_childItemLogout = new System.Windows.Forms.ToolStripMenuItem();
         this.File_childItemExit = new System.Windows.Forms.ToolStripMenuItem();
+        this.rootSettings = new System.Windows.Forms.ToolStripMenuItem();
+        this.settings_spiceProxy = new System.Windows.Forms.ToolStripMenuItem();
         this.menuStrip1.SuspendLayout();
         this.SuspendLayout();
         // 
@@ -55,7 +57,7 @@ partial class MainPanel
         // 
         // menuStrip1
         // 
-        this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.rootItem_File });
+        this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.rootItem_File, this.rootSettings });
         this.menuStrip1.Location = new System.Drawing.Point(0, 0);
         this.menuStrip1.Name = "menuStrip1";
         this.menuStrip1.Size = new System.Drawing.Size(694, 24);
@@ -72,16 +74,30 @@ partial class MainPanel
         // File_childItemLogout
         // 
         this.File_childItemLogout.Name = "File_childItemLogout";
-        this.File_childItemLogout.Size = new System.Drawing.Size(112, 22);
+        this.File_childItemLogout.Size = new System.Drawing.Size(152, 22);
         this.File_childItemLogout.Text = "Logout";
         this.File_childItemLogout.Click += new System.EventHandler(this.ActionLogout);
         // 
         // File_childItemExit
         // 
         this.File_childItemExit.Name = "File_childItemExit";
-        this.File_childItemExit.Size = new System.Drawing.Size(112, 22);
+        this.File_childItemExit.Size = new System.Drawing.Size(152, 22);
         this.File_childItemExit.Text = "Exit";
         this.File_childItemExit.Click += new System.EventHandler(this.ActionExitApplication);
+        // 
+        // rootSettings
+        // 
+        this.rootSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.settings_spiceProxy });
+        this.rootSettings.Name = "rootSettings";
+        this.rootSettings.Size = new System.Drawing.Size(61, 20);
+        this.rootSettings.Text = "Settings";
+        // 
+        // settings_spiceProxy
+        // 
+        this.settings_spiceProxy.Name = "settings_spiceProxy";
+        this.settings_spiceProxy.Size = new System.Drawing.Size(152, 22);
+        this.settings_spiceProxy.Text = "SPICE Proxy";
+        this.settings_spiceProxy.Click += new System.EventHandler(this.openSpiceProxyPanel);
         // 
         // MainPanel
         // 
@@ -106,6 +122,9 @@ partial class MainPanel
         this.ResumeLayout(false);
         this.PerformLayout();
     }
+
+    private System.Windows.Forms.ToolStripMenuItem rootSettings;
+    private System.Windows.Forms.ToolStripMenuItem settings_spiceProxy;
 
     private System.Windows.Forms.Panel panel_machines;
 
