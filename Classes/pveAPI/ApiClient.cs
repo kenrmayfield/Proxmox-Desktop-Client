@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
@@ -47,21 +48,29 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
 
         public async Task<List<RealmData>> GetRealmsAsync()
         {
-            try
+            using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
             {
-                var response = await _httpClient.GetAsync("access/domains").ConfigureAwait(false);
-                Console.WriteLine(response);
-                response.EnsureSuccessStatusCode();
+                try
+                {
+                    var response = await _httpClient.GetAsync("access/domains", cts.Token).ConfigureAwait(false);
+                    response.EnsureSuccessStatusCode();
 
-                var jsonData = JsonConvert.DeserializeObject<Dictionary<string, List<RealmData>>>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
-                return jsonData?["data"] ?? new List<RealmData>();
-            }
-            catch (Exception ex)
-            {
-                // Log or handle the exception as needed
-                return new List<RealmData>();
+                    var jsonData = JsonConvert.DeserializeObject<Dictionary<string, List<RealmData>>>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+                    return jsonData?["data"] ?? new List<RealmData>();
+                }
+                catch (TaskCanceledException)
+                {
+                    MessageBox.Show("Could not reach the Proxmox API.\n\rPlease check your settings and try again.", "Server Error");
+                    return new List<RealmData>();
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("The server information provided doesn't lead to the Proxmox API.\n\rPlease check your settings and try again.", "Server Error");
+                    return new List<RealmData>();
+                }
             }
         }
+
 
         public async Task<bool> LoginAsync(string username, string password, string realm, string otp = null)
         {

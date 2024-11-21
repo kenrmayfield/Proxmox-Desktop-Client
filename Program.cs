@@ -28,5 +28,15 @@ namespace Proxmox_Desktop_Client
             Application.Run(new ClientLogin());
         }
         
+        public static void DebugPoint(string content)
+        {
+            bool debugMode = false;
+            #if DEBUG
+                debugMode = true;
+            #endif
+            
+            Console.WriteLine(content);
+        }
+        
     }
 }

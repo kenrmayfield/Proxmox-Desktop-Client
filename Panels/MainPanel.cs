@@ -153,10 +153,10 @@ namespace Proxmox_Desktop_Client
             new NoVNCClient(_api, machineData);
         }
 
-        private void Spice_Client(int vmid)
+        private async void Spice_Client(int vmid)
         {
             var spiceClient = new SpiceClient(_api, _api.Machines.FirstOrDefault(m => m.Vmid == vmid));
-            spiceClient.RequestSpiceConnection();
+            await spiceClient.RequestSpiceConnection();
         }
 
         private async Task<bool> CheckSpiceAble(MachineData Machine)

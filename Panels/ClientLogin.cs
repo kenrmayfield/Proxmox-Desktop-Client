@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using Proxmox_Desktop_Client.Classes;
 using Proxmox_Desktop_Client.Classes.pveAPI;
@@ -33,35 +34,44 @@ namespace Proxmox_Desktop_Client
             string port = textBox_port.Text;
             bool validateSsl = checkBox_ssl.Checked;
             
-            Console.WriteLine("Checking Server");
+            this.panel_credentials.Enabled = false;
+            this.panel_server.Enabled = false;
+            this.Width = 290;
+            CenterToScreen();
             
+            Program.DebugPoint($"Connecting to server: {server}:{port}, SSL:{validateSsl}");
             _api = new ApiClient(server, port, validateSsl);
-            Console.WriteLine("Connected Server");
             
+            Program.DebugPoint($"Collecting Realm Data...");
             var realms = await _api.GetRealmsAsync();
-            Console.WriteLine("Realms");
 
+            Program.DebugPoint($"Validating Realm Data...");
             if (realms != null && realms.Count > 0)
             {
                 comboBox_realm.DataSource = realms;
                 comboBox_realm.DisplayMember = "Comment";
                 comboBox_realm.ValueMember = "Realm";
-
+                
                 string savedRealm = (string)Program._Config.GetSetting("Login_Realm");
                 if (!string.IsNullOrEmpty(savedRealm))
                 {
                     comboBox_realm.SelectedValue = savedRealm;
                 }
-
+                
+                Program.DebugPoint($"Has Realm Data...");
                 panel_credentials.Visible = true;
                 Width = 570;
-                CenterToScreen();
             }
             else
-            {
+            {   
+                Program.DebugPoint($"No Realm Data/Connection Error...");
                 comboBox_realm.DataSource = null;
                 Width = 290;
             }
+            
+            CenterToScreen();
+            this.panel_credentials.Enabled = true;
+            this.panel_server.Enabled = true;
         }
 
         private async void ValidateLogin(object sender, EventArgs e)
