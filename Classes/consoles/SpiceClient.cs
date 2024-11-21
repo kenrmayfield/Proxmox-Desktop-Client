@@ -39,7 +39,7 @@ public class SpiceClient
         var rootObject = ConvertJsonToVVFormat(results);
         LaunchVirtViewer(rootObject);
     }
-     public string ConvertJsonToVVFormat(string jsonResponse)
+    public string ConvertJsonToVVFormat(string jsonResponse)
     {
         // Parse the JSON response
         var jsonData = JObject.Parse(jsonResponse)["data"];
@@ -84,6 +84,30 @@ public class SpiceClient
 
         return vvFileContent.Trim();
     }
+    
+    public static string FindRemoteViewerPath()
+    {
+        string baseDirectory = @"C:\Program Files";
+        string fileName = "remote-viewer.exe";
+
+        // Get all directories starting with "VirtViewer"
+        var directories = Directory.GetDirectories(baseDirectory, "VirtViewer*", SearchOption.TopDirectoryOnly);
+
+        foreach (var directory in directories)
+        {
+            string binDirectory = Path.Combine(directory, "bin");
+            string remoteViewerPath = Path.Combine(binDirectory, fileName);
+
+            // Check if the "bin" directory exists and if remote-viewer.exe is present
+            if (Directory.Exists(binDirectory) && File.Exists(remoteViewerPath))
+            {
+                return remoteViewerPath; // Returns the full file path including remote-viewer.exe
+            }
+        }
+
+        return null; // or return an error message
+    }
+    
     public static void LaunchVirtViewer(string spiceObject)
     {
         // Create a temporary file
@@ -97,7 +121,7 @@ public class SpiceClient
             // Start virt-viewer with the temporary file as an argument
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                FileName = "C:\\Program Files\\VirtViewer v11.0-256\\bin\\remote-viewer.exe",
+                FileName = FindRemoteViewerPath(),
                 Arguments = $"\"{tempFilePath}\"",
                 UseShellExecute = false,
                 RedirectStandardError = true // Redirect standard error
