@@ -134,5 +134,6 @@ namespace Proxmox_Desktop_Client
                 e.Handled = true;
             }
         }
+
     }
 }

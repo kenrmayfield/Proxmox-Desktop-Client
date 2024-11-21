@@ -212,13 +212,12 @@ namespace Proxmox_Desktop_Client
         {
             if (Program._Panels.ContainsKey("SpiceProxyPanel"))
             {
-                
-            } else
-            {
-                
+                Program._Panels.Remove("SpiceProxyPanel");
             }
             
-            
+            SpiceProxyPanel panelSpiceProxy = new SpiceProxyPanel();
+            Program._Panels.Add("SpiceProxyPanel", panelSpiceProxy);
+            panelSpiceProxy.Show();
         }
     }
 }

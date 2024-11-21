@@ -39,34 +39,50 @@ public class SpiceClient
         var rootObject = ConvertJsonToVVFormat(results);
         LaunchVirtViewer(rootObject);
     }
-    public string ConvertJsonToVVFormat(string jsonResponse, string proxyServer = null, string proxyPort = null)
+     public string ConvertJsonToVVFormat(string jsonResponse)
     {
         // Parse the JSON response
         var jsonData = JObject.Parse(jsonResponse)["data"];
+
+        string proxyServer = Program._Config.GetSetting("SpiceProxy_Server") as string ?? string.Empty;
+        string proxyPort = Program._Config.GetSetting("SpiceProxy_Port") as string ?? string.Empty;
+        bool proxyEnabled = Program._Config.GetSetting("SpiceProxy_Enable") as bool? ?? false;
         
-        string server = String.Empty;
-        string port = String.Empty;
-        if (proxyServer == null) { server = _Api._ServerUserData.server; } else { server = proxyServer; }
-        if (proxyServer == null) { port = "3128"; } else { port = proxyPort; }
+        // Extract necessary fields
+        string toggleFullscreen = jsonData["toggle-fullscreen"].ToString();
+        //string proxy = jsonData["proxy"].ToString();
+        string proxy = "http://" + _Api._ServerUserData.server + ":3128";
+        if (proxyEnabled)
+        {
+            proxy = "http://" + proxyServer + ":" + proxyPort;
+        }
+        string title = jsonData["title"].ToString();
+        string hostSubject = jsonData["host-subject"].ToString();
+        string secureAttention = jsonData["secure-attention"].ToString();
+        string caCertificate = jsonData["ca"].ToString();// Summarized
+        string type = jsonData["type"].ToString();
+        int tlsPort = (int)jsonData["tls-port"];
+        string password = jsonData["password"].ToString();
+        string host = jsonData["host"].ToString();
+        string deleteThisFile = jsonData["delete-this-file"].ToString();
+        string releaseCursor = jsonData["release-cursor"].ToString();
 
         // Format the .vv file content
-        
-        string vvFileData = String.Empty; 
-        vvFileData  = "[virt-viewer]\n\r";
-        vvFileData += $"toggle-fullscreen="+jsonData["toggle-fullscreen"].ToString()+"\n\r";
-        vvFileData += $"proxy=http://"+server+":"+port+"\n\r";
-        vvFileData += $"title="+jsonData["title"].ToString()+"\n\r";
-        vvFileData += $"host-subject="+jsonData["host-subject"].ToString()+"\n\r";
-        vvFileData += $"secure-attention="+jsonData["secure-attention"].ToString()+"\n\r";
-        vvFileData += $"ca="+jsonData["ca"].ToString()+"\n\r";
-        vvFileData += $"type="+jsonData["type"].ToString()+"\n";
-        vvFileData += $"tls-port="+jsonData["tls-port"].ToString()+"\n\r";
-        vvFileData += $"password="+jsonData["password"].ToString()+"\n\r";
-        vvFileData += $"host="+jsonData["host"].ToString()+"\n\r";
-        vvFileData += $"delete-this-file="+jsonData["delete-this-file"].ToString()+"\n\r";
-        vvFileData += $"release-cursor="+jsonData["release-cursor"].ToString()+"\n\r";
-        
-        return vvFileData.Trim();
+        string vvFileContent = "[virt-viewer]\n";
+        vvFileContent += $"host={host}\n";
+        vvFileContent += $"delete-this-file={deleteThisFile}\n";
+        vvFileContent += $"release-cursor={releaseCursor}\n";
+        vvFileContent += $"password={password}\n";
+        vvFileContent += $"tls-port={tlsPort}\n";
+        vvFileContent += $"secure-attention={secureAttention}\n";
+        vvFileContent += $"host-subject={hostSubject}\n";
+        vvFileContent += $"ca={caCertificate}\n";
+        vvFileContent += $"type={type}\n";
+        vvFileContent += $"proxy={proxy}\n";
+        vvFileContent += $"toggle-fullscreen={toggleFullscreen}\n";
+        vvFileContent += $"title={title}";
+
+        return vvFileContent.Trim();
     }
     public static void LaunchVirtViewer(string spiceObject)
     {
@@ -102,14 +118,9 @@ public class SpiceClient
         }
         finally
         {
-            // Clean up the temporary file
-            if (File.Exists(tempFilePath))
-            {
-                File.Delete(tempFilePath);
-            }
+            // DO NOTHING
         }
     }
-    
     
     
     

@@ -35,11 +35,11 @@ partial class SpiceProxyPanel
         this.button_save = new System.Windows.Forms.Button();
         this.button_cancel = new System.Windows.Forms.Button();
         this.checkBox_proxyEnable = new System.Windows.Forms.CheckBox();
-        this.textBox_proxyPort = new System.Windows.Forms.TextBox();
         this.label_proxyPort = new System.Windows.Forms.Label();
         this.textBox_proxyServer = new System.Windows.Forms.TextBox();
         this.label_proxyServer = new System.Windows.Forms.Label();
         this.label1 = new System.Windows.Forms.Label();
+        this.textBox_proxyPort = new System.Windows.Forms.TextBox();
         this.SuspendLayout();
         // 
         // button_save
@@ -55,6 +55,7 @@ partial class SpiceProxyPanel
         this.button_save.TabIndex = 12;
         this.button_save.Text = "SAVE";
         this.button_save.UseVisualStyleBackColor = false;
+        this.button_save.Click += new System.EventHandler(this.button_save_Click);
         // 
         // button_cancel
         // 
@@ -69,6 +70,7 @@ partial class SpiceProxyPanel
         this.button_cancel.TabIndex = 13;
         this.button_cancel.Text = "CANCEL";
         this.button_cancel.UseVisualStyleBackColor = false;
+        this.button_cancel.Click += new System.EventHandler(this.button_cancel_Click);
         // 
         // checkBox_proxyEnable
         // 
@@ -80,14 +82,6 @@ partial class SpiceProxyPanel
         this.checkBox_proxyEnable.TabIndex = 14;
         this.checkBox_proxyEnable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
         this.checkBox_proxyEnable.UseVisualStyleBackColor = true;
-        // 
-        // textBox_proxyPort
-        // 
-        this.textBox_proxyPort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-        this.textBox_proxyPort.Location = new System.Drawing.Point(111, 74);
-        this.textBox_proxyPort.Name = "textBox_proxyPort";
-        this.textBox_proxyPort.Size = new System.Drawing.Size(100, 20);
-        this.textBox_proxyPort.TabIndex = 15;
         // 
         // label_proxyPort
         // 
@@ -106,6 +100,7 @@ partial class SpiceProxyPanel
         this.textBox_proxyServer.Name = "textBox_proxyServer";
         this.textBox_proxyServer.Size = new System.Drawing.Size(181, 20);
         this.textBox_proxyServer.TabIndex = 17;
+        this.textBox_proxyServer.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
         // 
         // label_proxyServer
         // 
@@ -126,16 +121,27 @@ partial class SpiceProxyPanel
         this.label1.Text = "Enter and check checkbox to enable an alternate proxy server for SPICE connection" + "s.";
         this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
         // 
-        // SpiceConfig
+        // textBox_proxyPort
+        // 
+        this.textBox_proxyPort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+        this.textBox_proxyPort.Location = new System.Drawing.Point(111, 74);
+        this.textBox_proxyPort.MaxLength = 5;
+        this.textBox_proxyPort.Name = "textBox_proxyPort";
+        this.textBox_proxyPort.Size = new System.Drawing.Size(108, 20);
+        this.textBox_proxyPort.TabIndex = 20;
+        this.textBox_proxyPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+        this.textBox_proxyPort.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox_KeyPress);
+        // 
+        // SpiceProxyPanel
         // 
         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(304, 150);
+        this.Controls.Add(this.textBox_proxyPort);
         this.Controls.Add(this.label1);
         this.Controls.Add(this.label_proxyServer);
         this.Controls.Add(this.textBox_proxyServer);
         this.Controls.Add(this.label_proxyPort);
-        this.Controls.Add(this.textBox_proxyPort);
         this.Controls.Add(this.checkBox_proxyEnable);
         this.Controls.Add(this.button_cancel);
         this.Controls.Add(this.button_save);
@@ -144,7 +150,7 @@ partial class SpiceProxyPanel
         this.MaximumSize = new System.Drawing.Size(320, 200);
         this.MinimizeBox = false;
         this.MinimumSize = new System.Drawing.Size(320, 39);
-        this.Name = "SpiceConfig";
+        this.Name = "SpiceProxyPanel";
         this.ShowInTaskbar = false;
         this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
         this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -153,14 +159,14 @@ partial class SpiceProxyPanel
         this.PerformLayout();
     }
 
+    private System.Windows.Forms.TextBox textBox_proxyPort;
+
     private System.Windows.Forms.Label label1;
 
     private System.Windows.Forms.TextBox textBox_proxyServer;
     private System.Windows.Forms.Label label_proxyServer;
 
     private System.Windows.Forms.Label label_proxyPort;
-
-    private System.Windows.Forms.TextBox textBox_proxyPort;
 
     private System.Windows.Forms.Button button_save;
     private System.Windows.Forms.Button button_cancel;
