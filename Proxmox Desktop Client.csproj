@@ -139,6 +139,7 @@
         <Compile Include="Classes\pveAPI\objects\dataServerUser.cs" />
         <Compile Include="Classes\pveAPI\UserPermissions.cs" />
         <Compile Include="Classes\Ticker.cs" />
+        <Compile Include="obj\Debug\.NETFramework,Version=v4.8.1.AssemblyAttributes.cs" />
         <Compile Include="Panels\ClientLogin.cs">
           <SubType>Form</SubType>
         </Compile>
@@ -151,6 +152,12 @@
         <Compile Include="Panels\MainPanel.Designer.cs">
           <DependentUpon>MainPanel.cs</DependentUpon>
         </Compile>
+        <Compile Include="Panels\SpiceConfig.cs">
+          <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="Panels\SpiceConfig.Designer.cs">
+          <DependentUpon>SpiceConfig.cs</DependentUpon>
+        </Compile>
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <EmbeddedResource Include="Panels\ClientLogin.resx">
@@ -158,6 +165,9 @@
         </EmbeddedResource>
         <EmbeddedResource Include="Panels\MainPanel.resx">
           <DependentUpon>MainPanel.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Panels\SpiceConfig.resx">
+          <DependentUpon>SpiceConfig.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="Properties\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
@@ -183,6 +193,16 @@
         <None Include="App.config" />
     </ItemGroup>
     <ItemGroup>
+      <Content Include="obj\Debug\Proxmox .1D3D995B.Up2Date" />
+      <Content Include="obj\Debug\Proxmox Desktop Client.csproj.AssemblyReference.cache" />
+      <Content Include="obj\Debug\Proxmox Desktop Client.csproj.CoreCompileInputs.cache" />
+      <Content Include="obj\Debug\Proxmox Desktop Client.csproj.FileListAbsolute.txt" />
+      <Content Include="obj\Debug\Proxmox Desktop Client.csproj.GenerateResource.cache" />
+      <Content Include="obj\Debug\Proxmox_Desktop_Client.ClientLogin.resources" />
+      <Content Include="obj\Debug\Proxmox_Desktop_Client.exe" />
+      <Content Include="obj\Debug\Proxmox_Desktop_Client.MainPanel.resources" />
+      <Content Include="obj\Debug\Proxmox_Desktop_Client.pdb" />
+      <Content Include="obj\Debug\Proxmox_Desktop_Client.Properties.Resources.resources" />
       <Content Include="Resources\Icons\default-icon.ico" />
       <Content Include="Resources\Icons\default.png" />
       <Content Include="Resources\icons_dots.png" />

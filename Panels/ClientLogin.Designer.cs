@@ -226,7 +226,7 @@
             this.logo.ErrorImage = null;
             this.logo.Image = ((System.Drawing.Image)(resources.GetObject("logo.Image")));
             this.logo.InitialImage = null;
-            this.logo.Location = new System.Drawing.Point(91, 12);
+            this.logo.Location = new System.Drawing.Point(51, 12);
             this.logo.Name = "logo";
             this.logo.Size = new System.Drawing.Size(150, 150);
             this.logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
