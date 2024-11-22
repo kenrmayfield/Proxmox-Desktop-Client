@@ -17,7 +17,7 @@ The intent mostly was for the use of SPICE (virt-viewer) connectivity as some of
 - Remote (NoVNC/SPICE/xtermJS)
 - Ability to provide alternate SPICE Proxy Information
 
-- ## Known Issues
+## Known Issues
 - Spice doesn't always get enabled if the VM was the "last" to be loaded from the server.
 - Full-screen/scale issues with NoVNC & xtermJS. 
 
