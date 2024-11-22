@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
-using OtpNet;
 using Proxmox_Desktop_Client.Classes.pveAPI.objects;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 

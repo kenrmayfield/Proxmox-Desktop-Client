@@ -104,9 +104,9 @@ namespace Proxmox_Desktop_Client
             var menuItem2 = new ToolStripMenuItem("Spice");
             var menuItem3 = new ToolStripMenuItem("xTermJS");
 
-            menuItem1.Click += (sender, e) => NoVNC_Client(machineData);
+            menuItem1.Click += (sender, e) => webClient(machineData, "novnc");
             menuItem2.Click += (sender, e) => Spice_Client(machineData.Vmid);
-            menuItem3.Click += (sender, e) => xTermJS_Client(machineData);
+            menuItem3.Click += (sender, e) => webClient(machineData, "xtermjs");
             
             menuItem2.Enabled = false;
             
@@ -143,16 +143,11 @@ namespace Proxmox_Desktop_Client
             
         }
 
-        private void NoVNC_Client(MachineData machineData)
+        private void webClient(MachineData machineData, string RemoteType)
         {
-            new NoVNCClient(_api, machineData);
+            NoVNCClient webClient = new NoVNCClient(Program._Api, machineData, RemoteType);
         }
-
-        private void xTermJS_Client(MachineData machineData)
-        {
-            new NoVNCClient(_api, machineData);
-        }
-
+        
         private async void Spice_Client(int vmid)
         {
             var spiceClient = new SpiceClient(_api, _api.Machines.FirstOrDefault(m => m.Vmid == vmid));

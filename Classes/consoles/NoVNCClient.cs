@@ -1,7 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
+using Newtonsoft.Json;
 using Proxmox_Desktop_Client.Classes.pveAPI;
 using Proxmox_Desktop_Client.Classes.pveAPI.objects;
 
@@ -9,100 +11,86 @@ namespace Proxmox_Desktop_Client.Classes.consoles
 {
     public partial class NoVNCClient : Form
     {
-        private WebView2 webView;
-        private bool skipSSL;
-        private dataServerUser _ServerUserData;
-        private MachineData _Machine;
         private ApiClient _Api;
+        private MachineData _Machine;
+        private WebView2 webView;
 
-        public NoVNCClient(ApiClient Api, MachineData Machine)
+        private string varServer;
+        private string varPort;
+        private string consoleType;
+        private string vmid;
+        private string vmName;
+        private string nodeName;
+        private string remoteType;
+
+        public NoVNCClient(ApiClient Api, MachineData Machine, string Remote = "novcs")
         {
             _Api = Api;
-            _ServerUserData = Api._ServerUserData;
             _Machine = Machine;
-            skipSSL = Api._ServerUserData.skipSSL;
 
             InitializeComponent();
-            this.WindowState = FormWindowState.Maximized; // Maximize the window
-            Show();
-            CenterToScreen();
-            InitializeWebView();
 
-            this.KeyDown += NoVNCClient_KeyDown;
+            // Windows Configs
+            CenterToScreen();
+            varServer = Api._ServerUserData.server;
+            varPort = Api._ServerUserData.port;
+            consoleType = Machine.Type == "qemu" ? "kvm" : Machine.Type;
+            remoteType = Remote;
+            vmid = Machine.Vmid.ToString();
+            vmName = Machine.Name;
+            nodeName = Machine.NodeName;
+
+            InitializeWebView();
         }
 
         private async void InitializeWebView()
         {
-            webView = new WebView2
+            try
             {
-                Dock = DockStyle.Fill
-            };
-            this.Controls.Add(webView);
+                webView = new WebView2
+                {
+                    Dock = DockStyle.Fill
+                };
+                this.Controls.Add(webView);
 
-            var env = await CoreWebView2Environment.CreateAsync(null, null, new CoreWebView2EnvironmentOptions("--ignore-certificate-errors"));
-            await webView.EnsureCoreWebView2Async(env);
+                // Specify a custom user data folder
+                string userDataFolder = Path.Combine(Program._Config.appDataFolder, "WebView2Data");
+                
+                var env = await CoreWebView2Environment.CreateAsync(null, userDataFolder, new CoreWebView2EnvironmentOptions("--ignore-certificate-errors"));
+                await webView.EnsureCoreWebView2Async(env);
 
-            string server = _ServerUserData.server;
-            string ticketValue = _Api._apiTicket.ticket;
+                // Check if WebView2 is initialized
+                if (webView.CoreWebView2 == null)
+                {
+                    Console.WriteLine("WebView2 initialization failed.");
+                    return;
+                }
 
-            var cookie = webView.CoreWebView2.CookieManager.CreateCookie(
-                "PVEAuthCookie",
-                ticketValue,
-                server,
-                "/"
-            );
+                string ticketValue = _Api._apiTicket.ticket;
 
-            cookie.IsHttpOnly = true;
-            cookie.SameSite = CoreWebView2CookieSameSiteKind.Lax;
+                var cookie = webView.CoreWebView2.CookieManager.CreateCookie(
+                    "PVEAuthCookie",
+                    ticketValue,
+                    varServer,
+                    "/"
+                );
 
-            webView.CoreWebView2.CookieManager.AddOrUpdateCookie(cookie);
+                cookie.IsHttpOnly = true;
+                cookie.SameSite = CoreWebView2CookieSameSiteKind.Lax;
 
-            string port = _ServerUserData.port;
-            string consoleType = _Machine.Type == "qemu" ? "kvm" : _Machine.Type;
-            string vmid = _Machine.Vmid.ToString();
-            string machineName = _Machine.Name;
-            string nodeName = _Machine.NodeName;
+                webView.CoreWebView2.CookieManager.AddOrUpdateCookie(cookie);
+                
+                string noVncUrl = $"https://{varServer}:{varPort}/?console={consoleType}&{remoteType}=1&vmid={vmid}&vmname={vmName}&node={nodeName}&resize=scale&cmd=";
+                Console.WriteLine($"Navigating to URL: {noVncUrl}");
 
-            string noVncUrl = $"https://{server}:{port}/?console={consoleType}&novnc=1&vmid={vmid}&vmname={machineName}&node={nodeName}&resize=scale&cmd=";
-
-            webView.CoreWebView2.Navigate(noVncUrl);
-
-            // Handle full-screen requests
-            webView.CoreWebView2.ContainsFullScreenElementChanged += CoreWebView2_ContainsFullScreenElementChanged;
-        }
-
-        private void CoreWebView2_ContainsFullScreenElementChanged(object sender, object o)
-        {
-            if (webView.CoreWebView2.ContainsFullScreenElement)
-            {
-                this.FormBorderStyle = FormBorderStyle.None;
-                this.WindowState = FormWindowState.Maximized;
+                webView.CoreWebView2.Navigate(noVncUrl);
             }
-            else
+            catch (Exception ex)
             {
-                this.FormBorderStyle = FormBorderStyle.Sizable;
-                this.WindowState = FormWindowState.Maximized;
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
-        }
 
-        private void NoVNCClient_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.F11)
-            {
-                ToggleMaximize();
-            }
-        }
-
-        private void ToggleMaximize()
-        {
-            if (this.WindowState == FormWindowState.Maximized)
-            {
-                this.WindowState = FormWindowState.Normal;
-            }
-            else
-            {
-                this.WindowState = FormWindowState.Maximized;
-            }
+            Show();
         }
     }
 }

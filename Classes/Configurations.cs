@@ -9,12 +9,13 @@ namespace Proxmox_Desktop_Client.Classes
     {
         private Dictionary<string, object> settings;
         private string filePath;
+        public  string appDataFolder;
         private string appName = "ProxmoxDesktopClient";
 
         public Configurations()
         {
             settings = new Dictionary<string, object>();
-            string appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName);
+            appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName);
             Directory.CreateDirectory(appDataFolder); // Ensure the directory exists
             filePath = Path.Combine(appDataFolder, "settings.json");
             LoadFromFile();
