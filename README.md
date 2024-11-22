@@ -19,3 +19,6 @@ The intent mostly was for the use of SPICE (virt-viewer) connectivity as some of
 - Spice doesn't always get enabled if the VM was the "last" to be loaded from the server.
 - Full-screen/scale issues with NoVNC & xtermJS. 
 
+## Future Road Map
+- Refresh VM List / Session Refresh
+- Status Icon (Online/Offline), Currently Menu disabled if offline.
