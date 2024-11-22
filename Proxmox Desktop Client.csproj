@@ -186,7 +186,6 @@
         <None Include="App.config" />
     </ItemGroup>
     <ItemGroup>
-      <Content Include="ILLink\ILLink.Descriptors.LibraryBuild.xml" />
       <Content Include="Resources\Icons\default-icon.ico" />
       <Content Include="Resources\Icons\default.png" />
       <Content Include="Resources\icons_dots.png" />
