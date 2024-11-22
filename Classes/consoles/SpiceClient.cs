@@ -36,6 +36,7 @@ public class SpiceClient
         postData.Add("vmid", _Machine.Vmid.ToString());
         
         string results = await _Api.PostAsync("nodes/"+ _Machine.NodeName +"/qemu/"+_Machine.Vmid+"/spiceproxy", postData);
+        Program.DebugPoint(results);
         var rootObject = ConvertJsonToVVFormat(results);
         LaunchVirtViewer(rootObject);
     }

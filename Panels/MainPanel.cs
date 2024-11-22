@@ -108,7 +108,9 @@ namespace Proxmox_Desktop_Client
             menuItem2.Click += (sender, e) => Spice_Client(machineData.Vmid);
             menuItem3.Click += (sender, e) => webClient(machineData, "xtermjs");
             
+            menuItem1.Enabled = false;
             menuItem2.Enabled = false;
+            menuItem3.Enabled = false;
             
             contextMenu.Items.AddRange(new ToolStripItem[] { menuItem1, menuItem2, menuItem3 });
             newPbDots.ContextMenuStrip = contextMenu;
@@ -136,10 +138,21 @@ namespace Proxmox_Desktop_Client
             
             panel_machines.Controls.Add(newGroupBox);
             
-            if(machineData.Type == "qemu")
+            if (machineData.Status == "running")
             {
-                menuItem2.Enabled = (bool) await CheckSpiceAble(machineData);
+                menuItem1.Enabled = true;
+                if(machineData.Type == "lxc" || machineData.Serial == 1)
+                {
+                    menuItem3.Enabled = true;    
+                }
+            
+                if(machineData.Type == "qemu")
+                {
+                    menuItem2.Enabled = (bool) await CheckSpiceAble(machineData);
+                }    
             }
+            
+            
             
         }
 

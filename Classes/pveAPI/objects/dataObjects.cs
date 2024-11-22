@@ -91,6 +91,9 @@ public class MachineData
 
     [JsonProperty("status")]
     public string Status { get; set; }
+    
+    [JsonProperty("serial")]
+    public int Serial { get; set; }
 }
 public class RealmData
 { 

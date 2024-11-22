@@ -62,7 +62,7 @@ namespace Proxmox_Desktop_Client.Classes.consoles
                 // Check if WebView2 is initialized
                 if (webView.CoreWebView2 == null)
                 {
-                    Console.WriteLine("WebView2 initialization failed.");
+                    Program.DebugPoint("WebView2 initialization failed.");
                     return;
                 }
 
@@ -81,13 +81,13 @@ namespace Proxmox_Desktop_Client.Classes.consoles
                 webView.CoreWebView2.CookieManager.AddOrUpdateCookie(cookie);
                 
                 string noVncUrl = $"https://{varServer}:{varPort}/?console={consoleType}&{remoteType}=1&vmid={vmid}&vmname={vmName}&node={nodeName}&resize=scale&cmd=";
-                Console.WriteLine($"Navigating to URL: {noVncUrl}");
+                Program.DebugPoint($"Navigating to URL: {noVncUrl}");
 
                 webView.CoreWebView2.Navigate(noVncUrl);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(JsonConvert.SerializeObject(ex));
+                Program.DebugPoint(JsonConvert.SerializeObject(ex));
             }
 
             Show();
