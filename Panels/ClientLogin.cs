@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows.Forms;
-using Proxmox_Desktop_Client.Classes;
 using Proxmox_Desktop_Client.Classes.pveAPI;
 using Proxmox_Desktop_Client.Classes.pveAPI.objects;
 
-namespace Proxmox_Desktop_Client
+namespace Proxmox_Desktop_Client.Panels
 {
     public partial class ClientLogin : Form
     {

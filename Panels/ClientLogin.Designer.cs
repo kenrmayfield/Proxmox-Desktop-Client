@@ -1,4 +1,4 @@
-﻿namespace Proxmox_Desktop_Client
+﻿namespace Proxmox_Desktop_Client.Panels
 {
     partial class ClientLogin
     {

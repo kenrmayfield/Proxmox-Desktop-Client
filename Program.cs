@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Proxmox_Desktop_Client.Classes;
 using Proxmox_Desktop_Client.Classes.pveAPI;
+using Proxmox_Desktop_Client.Panels;
 
 namespace Proxmox_Desktop_Client
 {

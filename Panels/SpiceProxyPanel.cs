@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace Proxmox_Desktop_Client;
+namespace Proxmox_Desktop_Client.Panels;
 
 public partial class SpiceProxyPanel : Form
 {
