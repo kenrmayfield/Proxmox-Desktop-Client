@@ -12,10 +12,8 @@ namespace Proxmox_Desktop_Client
     {
         // Create a new instance of Configurations with automatic saving
         public static Configurations                _Config = new Configurations();
-        public static Ticker                        _Ticker = new Ticker();
         public static Dictionary<string, object>    _Panels = new Dictionary<string, object>();
         public static ApiClient                     _Api;
-        public static UserPermissions               _Permissions;
     
         /// <summary>
         /// The main entry point for the application.
@@ -23,19 +21,24 @@ namespace Proxmox_Desktop_Client
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ClientLogin());
+            try
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new ClientLogin());    
+            } catch(Exception ex)
+            {
+                DebugPoint("Program Failure (MAIN): " + Environment.NewLine + ex.StackTrace);
+            }
+        
+            
         }
         
         public static void DebugPoint(string content)
         {
-            bool debugMode = false;
             #if DEBUG
-                debugMode = true;
+                Console.WriteLine(content);
             #endif
-            
-            Console.WriteLine(content);
         }
         
     }

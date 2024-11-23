@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text.Json;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Proxmox_Desktop_Client.Classes.pveAPI;
 using Proxmox_Desktop_Client.Classes.pveAPI.objects;
 
 namespace Proxmox_Desktop_Client.Classes.consoles;
@@ -19,28 +13,23 @@ namespace Proxmox_Desktop_Client.Classes.consoles;
 
 public class SpiceClient
 {
-    private ApiClient _Api;
-    private MachineData _Machine;
+    private MachineData _machine;
 
-    public SpiceClient(ApiClient Api, MachineData Machine)
+    public SpiceClient(MachineData machine)
     {
-    
-        _Api = Api;
-        _Machine = Machine;
-        
+        _machine = machine;
     }
-    public async Task RequestSpiceConnection() {
+    public void RequestSpiceConnection() {
         Dictionary<string, string> postData = new Dictionary<string, string>();
         
-        postData.Add("node", _Machine.NodeName);
-        postData.Add("vmid", _Machine.Vmid.ToString());
+        postData.Add("node", _machine.NodeName);
+        postData.Add("vmid", _machine.Vmid.ToString());
         
-        string results = _Api.PostRequest("nodes/"+ _Machine.NodeName +"/qemu/"+_Machine.Vmid+"/spiceproxy", postData);
-        Program.DebugPoint(results);
-        var rootObject = ConvertJsonToVVFormat(results);
+        string results = Program._Api.PostRequest("nodes/"+ _machine.NodeName +"/qemu/"+_machine.Vmid+"/spiceproxy", postData);
+        var rootObject = ConvertJsonToVvFormat(results);
         LaunchVirtViewer(rootObject);
     }
-    public string ConvertJsonToVVFormat(string jsonResponse)
+    private string ConvertJsonToVvFormat(string jsonResponse)
     {
         // Parse the JSON response
         var jsonData = JObject.Parse(jsonResponse)["data"];
@@ -50,23 +39,22 @@ public class SpiceClient
         bool proxyEnabled = Program._Config.GetSetting("SpiceProxy_Enable") as bool? ?? false;
         
         // Extract necessary fields
-        string toggleFullscreen = jsonData["toggle-fullscreen"].ToString();
-        //string proxy = jsonData["proxy"].ToString();
-        string proxy = "http://" + _Api.DataServerInfo.server + ":3128";
+        string toggleFullscreen = jsonData!["toggle-fullscreen"]!.ToString();
+        string proxy = "http://" + Program._Api.DataServerInfo.server + ":3128";
         if (proxyEnabled)
         {
             proxy = "http://" + proxyServer + ":" + proxyPort;
         }
-        string title = jsonData["title"].ToString();
-        string hostSubject = jsonData["host-subject"].ToString();
-        string secureAttention = jsonData["secure-attention"].ToString();
-        string caCertificate = jsonData["ca"].ToString();// Summarized
-        string type = jsonData["type"].ToString();
+        string title = jsonData["title"]!.ToString();
+        string hostSubject = jsonData["host-subject"]!.ToString();
+        string secureAttention = jsonData["secure-attention"]!.ToString();
+        string caCertificate = jsonData["ca"]!.ToString();// Summarized
+        string type = jsonData["type"]!.ToString();
         int tlsPort = (int)jsonData["tls-port"];
-        string password = jsonData["password"].ToString();
-        string host = jsonData["host"].ToString();
-        string deleteThisFile = jsonData["delete-this-file"].ToString();
-        string releaseCursor = jsonData["release-cursor"].ToString();
+        string password = jsonData["password"]!.ToString();
+        string host = jsonData["host"]!.ToString();
+        string deleteThisFile = jsonData["delete-this-file"]!.ToString();
+        string releaseCursor = jsonData["release-cursor"]!.ToString();
 
         // Format the .vv file content
         string vvFileContent = "[virt-viewer]\n";
@@ -113,37 +101,23 @@ public class SpiceClient
     {
         // Create a temporary file
         string tempFilePath = Path.GetTempFileName();
-        
-        try
+
+        // Write the .vv file contents to the temporary file
+        File.WriteAllText(tempFilePath, spiceObject);
+
+        // Start virt-viewer with the temporary file as an argument
+        // Start virt-viewer with the temporary file as an argument
+        ProcessStartInfo startInfo = new ProcessStartInfo
         {
-            // Write the .vv file contents to the temporary file
-            File.WriteAllText(tempFilePath, spiceObject);
+            FileName = FindRemoteViewerPath(),
+            Arguments = $"\"{tempFilePath}\"",
+            UseShellExecute = false,
+            RedirectStandardError = true // Redirect standard error
+        };
 
-            // Start virt-viewer with the temporary file as an argument
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                FileName = FindRemoteViewerPath(),
-                Arguments = $"\"{tempFilePath}\"",
-                UseShellExecute = false,
-                RedirectStandardError = true // Redirect standard error
-            };
-
-            using (Process process = Process.Start(startInfo))
-            {
-                // Optionally read the error stream to log or ignore
-                using (StreamReader reader = process.StandardError)
-                {
-                    string errorOutput = reader.ReadToEnd();
-                    // Log the error output if needed
-                    // Console.WriteLine(errorOutput); // Uncomment to log errors
-                }
-
-                process.WaitForExit();
-            }
-        }
-        finally
+        using (Process process = Process.Start(startInfo))
         {
-            // DO NOTHING
+            process!.WaitForExit();
         }
     }
     

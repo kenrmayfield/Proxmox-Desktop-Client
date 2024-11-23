@@ -14,13 +14,11 @@ namespace Proxmox_Desktop_Client
     public partial class MainPanel : Form
     {
         private readonly ApiClient _api;
-        private readonly UserPermissions _permissions;
 
         public MainPanel()
         {
             Load += RefreshContent;
             _api = Program._Api;
-            _permissions = Program._Permissions;
             InitializeComponent();
             Show();
         }
@@ -160,10 +158,10 @@ namespace Proxmox_Desktop_Client
             NoVNCClient webClient = new NoVNCClient(Program._Api, machineData, RemoteType);
         }
         
-        private async void Spice_Client(int vmid)
+        private void Spice_Client(int vmid)
         {
-            var spiceClient = new SpiceClient(_api, _api.Machines.FirstOrDefault(m => m.Vmid == vmid));
-            await spiceClient.RequestSpiceConnection();
+            var spiceClient = new SpiceClient(_api.Machines.FirstOrDefault(m => m.Vmid == vmid));
+            spiceClient.RequestSpiceConnection();
         }
 
         private bool CheckSpiceAble(MachineData Machine)
