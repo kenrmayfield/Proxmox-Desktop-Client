@@ -4,46 +4,26 @@ using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using Newtonsoft.Json;
-using Proxmox_Desktop_Client.Classes.pveAPI;
 using Proxmox_Desktop_Client.Classes.pveAPI.objects;
 
 namespace Proxmox_Desktop_Client.Classes.consoles
 {
-    public partial class NoVNCClient : Form
+    public partial class NoVncClient : Form
     {
-        private ApiClient _Api;
-        private MachineData _Machine;
+        private readonly MachineData machine;
         private WebView2 webView;
 
-        private string varServer;
-        private string varPort;
-        private string consoleType;
-        private string vmid;
-        private string vmName;
-        private string nodeName;
-        private string remoteType;
-
-        public NoVNCClient(ApiClient Api, MachineData Machine, string Remote = "novcs")
+        public NoVncClient(MachineData machine, string remote = "novcs")
         {
-            _Api = Api;
-            _Machine = Machine;
+            this.machine = machine;
 
             InitializeComponent();
-
-            // Windows Configs
             CenterToScreen();
-            varServer = Api.DataServerInfo.server;
-            varPort = Api.DataServerInfo.port;
-            consoleType = Machine.Type == "qemu" ? "kvm" : Machine.Type;
-            remoteType = Remote;
-            vmid = Machine.Vmid.ToString();
-            vmName = Machine.Name;
-            nodeName = Machine.NodeName;
 
-            InitializeWebView();
+            InitializeWebView(remote);
         }
 
-        private async void InitializeWebView()
+        private async void InitializeWebView(string remoteType)
         {
             try
             {
@@ -53,25 +33,22 @@ namespace Proxmox_Desktop_Client.Classes.consoles
                 };
                 this.Controls.Add(webView);
 
-                // Specify a custom user data folder
                 string userDataFolder = Path.Combine(Program._Config.AppDataFolder, "WebView2Data");
-                
                 var env = await CoreWebView2Environment.CreateAsync(null, userDataFolder, new CoreWebView2EnvironmentOptions("--ignore-certificate-errors"));
                 await webView.EnsureCoreWebView2Async(env);
 
-                // Check if WebView2 is initialized
                 if (webView.CoreWebView2 == null)
                 {
                     Program.DebugPoint("WebView2 initialization failed.");
                     return;
                 }
 
-                string ticketValue = _Api.DataTicket.ticket;
+                string ticketValue = Program._Api.DataTicket.ticket;
 
                 var cookie = webView.CoreWebView2.CookieManager.CreateCookie(
                     "PVEAuthCookie",
                     ticketValue,
-                    varServer,
+                    Program._Api.DataServerInfo.server,
                     "/"
                 );
 
@@ -80,10 +57,29 @@ namespace Proxmox_Desktop_Client.Classes.consoles
 
                 webView.CoreWebView2.CookieManager.AddOrUpdateCookie(cookie);
                 
-                string noVncUrl = $"https://{varServer}:{varPort}/?console={consoleType}&{remoteType}=1&vmid={vmid}&vmname={vmName}&node={nodeName}&resize=scale&cmd=";
+                string consoleType = machine.Type == "qemu" ? "kvm" : machine.Type;
+                string noVncUrl = $"https://{Program._Api.DataServerInfo.server}:{Program._Api.DataServerInfo.port}/?console={consoleType}&{remoteType}=1&vmid={machine.Vmid}&vmname={machine.Name}&node={machine.NodeName}&resize=scale&cmd=";
                 Program.DebugPoint($"Navigating to URL: {noVncUrl}");
 
                 webView.CoreWebView2.Navigate(noVncUrl);
+                
+                // Inject JavaScript to call C# method on button click
+                string script = @"
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var fullscreenButton = document.getElementById('noVNC_fullscreen_button');
+                        if (fullscreenButton) {
+                            fullscreenButton.addEventListener('click', function() {
+                                window.chrome.webview.postMessage('toggleFullscreen');
+                            });
+                        } else {
+                            console.error('Fullscreen button not found.');
+                        }
+                    });
+                ";
+                await webView.CoreWebView2.ExecuteScriptAsync(script);
+
+                // Add message handler for fullscreen toggle
+                webView.CoreWebView2.WebMessageReceived += WebView_WebMessageReceived;
             }
             catch (Exception ex)
             {
@@ -91,6 +87,30 @@ namespace Proxmox_Desktop_Client.Classes.consoles
             }
 
             Show();
+        }
+
+        private void WebView_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
+        {
+            string message = e.TryGetWebMessageAsString();
+            Program.DebugPoint($"Message received: {message}");
+            if (message == "toggleFullscreen")
+            {
+                ToggleFullScreenMode();
+            }
+        }
+
+        private void ToggleFullScreenMode()
+        {
+            if (WindowState == FormWindowState.Normal)
+            {
+                FormBorderStyle = FormBorderStyle.None;
+                WindowState = FormWindowState.Maximized;
+            }
+            else
+            {
+                FormBorderStyle = FormBorderStyle.Sizable;
+                WindowState = FormWindowState.Normal;
+            }
         }
     }
 }

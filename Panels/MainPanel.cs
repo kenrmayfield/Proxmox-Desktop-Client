@@ -154,7 +154,7 @@ public partial class MainPanel : Form
     private static void WebClient(MachineData machineData, string remoteType)
     {
         // ReSharper disable once UnusedVariable
-        NoVNCClient noVncClient = new NoVNCClient(Program._Api, machineData, remoteType);
+        NoVncClient noVncClient = new NoVncClient(machineData, remoteType);
     }
         
     private void Spice_Client(int vmid)

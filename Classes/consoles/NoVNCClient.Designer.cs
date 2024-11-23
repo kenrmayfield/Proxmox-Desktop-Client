@@ -2,7 +2,7 @@
 
 namespace Proxmox_Desktop_Client.Classes.consoles;
 
-partial class NoVNCClient
+partial class NoVncClient
 {
     /// <summary>
     /// Required designer variable.
