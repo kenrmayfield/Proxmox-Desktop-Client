@@ -9,24 +9,25 @@ namespace Proxmox_Desktop_Client.Classes
         private class TickerItem
         {
             public Timer Timer { get; set; }
+            // ReSharper disable once UnusedAutoPropertyAccessor.Local
             public Action TickAction { get; set; }
         }
 
         // Dictionary to store multiple tickers
-        private readonly Dictionary<string, TickerItem> tickers;
+        private readonly Dictionary<string, TickerItem> _tickers;
 
         public Ticker()
         {
-            tickers = new Dictionary<string, TickerItem>();
+            _tickers = new Dictionary<string, TickerItem>();
         }
 
         // Start a ticker with a given name, interval, and action to execute
         public void Start(string name, double intervalInMilliseconds, Action action)
         {
-            if (tickers.ContainsKey(name))
+            if (_tickers.ContainsKey(name))
             {
                 // If ticker already exists, update interval and action, then restart
-                var tickerItem = tickers[name];
+                var tickerItem = _tickers[name];
                 tickerItem.Timer.Interval = intervalInMilliseconds;
                 tickerItem.TickAction = action;
                 tickerItem.Timer.Start();
@@ -35,7 +36,7 @@ namespace Proxmox_Desktop_Client.Classes
             {
                 // Create a new ticker if it doesn't exist
                 var timer = new Timer(intervalInMilliseconds);
-                timer.Elapsed += (sender, e) => action(); // Assign the action to call on each tick
+                timer.Elapsed += (_, _) => action(); // Assign the action to call on each tick
                 timer.AutoReset = true;
 
                 var tickerItem = new TickerItem
@@ -44,7 +45,7 @@ namespace Proxmox_Desktop_Client.Classes
                     TickAction = action
                 };
 
-                tickers[name] = tickerItem;
+                _tickers[name] = tickerItem;
                 timer.Start();
             }
         }
@@ -52,7 +53,7 @@ namespace Proxmox_Desktop_Client.Classes
         // Stop a ticker by name
         public void Stop(string name)
         {
-            if (tickers.TryGetValue(name, out var tickerItem))
+            if (_tickers.TryGetValue(name, out var tickerItem))
             {
                 tickerItem.Timer.Stop();
             }
@@ -61,7 +62,7 @@ namespace Proxmox_Desktop_Client.Classes
         // Stop all tickers
         public void StopAll()
         {
-            foreach (var ticker in tickers.Values)
+            foreach (var ticker in _tickers.Values)
             {
                 ticker.Timer.Stop();
             }
@@ -70,7 +71,7 @@ namespace Proxmox_Desktop_Client.Classes
         // Set or update the interval of a specific ticker
         public void SetInterval(string name, double intervalInMilliseconds)
         {
-            if (tickers.TryGetValue(name, out var tickerItem))
+            if (_tickers.TryGetValue(name, out var tickerItem))
             {
                 tickerItem.Timer.Interval = intervalInMilliseconds;
             }
@@ -79,18 +80,18 @@ namespace Proxmox_Desktop_Client.Classes
         // Remove a ticker entirely
         public void Remove(string name)
         {
-            if (tickers.TryGetValue(name, out var tickerItem))
+            if (_tickers.TryGetValue(name, out var tickerItem))
             {
                 tickerItem.Timer.Stop();
                 tickerItem.Timer.Dispose();
-                tickers.Remove(name);
+                _tickers.Remove(name);
             }
         }
 
         // Check if a specific ticker is running
         public bool IsRunning(string name)
         {
-            return tickers.TryGetValue(name, out var tickerItem) && tickerItem.Timer.Enabled;
+            return _tickers.TryGetValue(name, out var tickerItem) && tickerItem.Timer.Enabled;
         }
     }
 }

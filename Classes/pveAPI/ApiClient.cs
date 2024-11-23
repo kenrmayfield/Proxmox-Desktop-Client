@@ -1,30 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Policy;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Proxmox_Desktop_Client.Classes.pveAPI.objects;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Proxmox_Desktop_Client.Classes.pveAPI
 {
     public class ApiClient
     {
         private readonly HttpClient _httpClient;
-        public dataTicket DataTicket;
-        public dataServerInfo DataServerInfo;
+        public DataTicket DataTicket;
+        public readonly dataServerInfo DataServerInfo;
         
         
         public List<MachineData> Machines;
 
-        public ApiClient(string server, string port, bool skipSSL)
+        public ApiClient(string server, string port, bool skipSsl)
         {
             try
             {
@@ -32,15 +27,15 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
                 DataServerInfo = new dataServerInfo();
                 DataServerInfo.server = server;
                 DataServerInfo.port = port;
-                DataServerInfo.skipSSL = skipSSL;
+                DataServerInfo.skipSSL = skipSsl;
                 
                 // Initialize HttpClient Handler
                 var handler = new HttpClientHandler();
                 handler.UseCookies = false;
                 // If we are not checking for SSL do this...
-                if(skipSSL)
+                if(skipSsl)
                 {
-                    handler.ServerCertificateCustomValidationCallback = (requestMessage, certificate, chain, policyErrors) => true;    
+                    handler.ServerCertificateCustomValidationCallback = (_, _, _, _) => true;    
                 }
                 // Initialize HttpClient
                 _httpClient = new HttpClient(handler)
@@ -109,9 +104,9 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
                     dynamic apiResponse = JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
                     
                     // Process Ticket 
-                    DataTicket = new dataTicket
+                    DataTicket = new DataTicket
                     {
-                        ticket = apiResponse.data.ticket,
+                        ticket = apiResponse!.data.ticket,
                         CSRFPreventionToken = apiResponse.data.CSRFPreventionToken,
                         username = apiResponse.data.username
                     };
@@ -125,7 +120,7 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
                     // Process TOTP Authentication
                     if (DataTicket.ticket.Contains("PVE:!tfa!"))
                     {
-                        return TOTPChallengeRequest(DataTicket, otp);
+                        return TotpChallengeRequest(otp);
                     }
                     
                     // Return True
@@ -144,7 +139,7 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
             }
 
         }
-        private bool TOTPChallengeRequest(dataTicket dataTicket, string otpCode)
+        private bool TotpChallengeRequest(string otpCode)
         {
             try
             {
@@ -163,9 +158,9 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
                 if (response.IsSuccessStatusCode)
                 {
                     dynamic apiResponse = JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
-                    DataTicket = new dataTicket
+                    DataTicket = new DataTicket
                     {
-                        ticket = apiResponse.data.ticket,
+                        ticket = apiResponse!.data.ticket,
                         CSRFPreventionToken = apiResponse.data.CSRFPreventionToken,
                         username = apiResponse.data.username
                     };

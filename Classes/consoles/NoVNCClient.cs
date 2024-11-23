@@ -54,7 +54,7 @@ namespace Proxmox_Desktop_Client.Classes.consoles
                 this.Controls.Add(webView);
 
                 // Specify a custom user data folder
-                string userDataFolder = Path.Combine(Program._Config.appDataFolder, "WebView2Data");
+                string userDataFolder = Path.Combine(Program._Config.AppDataFolder, "WebView2Data");
                 
                 var env = await CoreWebView2Environment.CreateAsync(null, userDataFolder, new CoreWebView2EnvironmentOptions("--ignore-certificate-errors"));
                 await webView.EnsureCoreWebView2Async(env);

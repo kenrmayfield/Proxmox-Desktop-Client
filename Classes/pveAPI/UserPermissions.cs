@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.Json;
+
+// Currently not in use at this time... 
 
 namespace Proxmox_Desktop_Client.Classes.pveAPI;
 
 public class UserPermissions
 {
-    private Dictionary<string, Dictionary<string, int>> permissionsData;
+    private readonly Dictionary<string, Dictionary<string, int>> _permissionsData;
 
     public UserPermissions(string jsonString)
     {
         var jsonDocument = JsonDocument.Parse(jsonString);
-        permissionsData = new Dictionary<string, Dictionary<string, int>>();
+        _permissionsData = new Dictionary<string, Dictionary<string, int>>();
 
         foreach (var element in jsonDocument.RootElement.GetProperty("data").EnumerateObject())
         {
@@ -23,13 +24,13 @@ public class UserPermissions
                 permissions[permission.Name] = permission.Value.GetInt32();
             }
 
-            permissionsData[path] = permissions;
+            _permissionsData[path] = permissions;
         }
     }
 
     public bool HasAnyPermission(string action)
     {
-        foreach (var pathPermissions in permissionsData.Values)
+        foreach (var pathPermissions in _permissionsData.Values)
         {
             if (pathPermissions.ContainsKey(action) && pathPermissions[action] == 1)
             {
