@@ -186,6 +186,7 @@
     </ItemGroup>
     <ItemGroup>
       <Content Include="Notes\Notes.txt" />
+      <Content Include="README.md" />
       <Content Include="Resources\Icons\default-icon.ico" />
       <Content Include="Resources\Icons\default.png" />
       <Content Include="Resources\icons_dots.png" />

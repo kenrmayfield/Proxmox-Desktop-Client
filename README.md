@@ -18,8 +18,8 @@ The intent mostly was for the use of SPICE (virt-viewer) connectivity as some of
 - Ability to provide alternate SPICE Proxy Information
 
 ## Known Issues
-- Spice doesn't always get enabled if the VM was the "last" to be loaded from the server.
-- Full-screen/scale issues with NoVNC & xtermJS. 
+- Spice doesn't always get enabled if the VM was the "last" to be loaded from the server. (Fixed - Will be in the next release.)
+- Full-screen/scale issues with NoVNC & xtermJS.  (Fixed - Will be in the next release.)
 
 ## Future Road Map
 - Refresh VM List / Session Refresh
