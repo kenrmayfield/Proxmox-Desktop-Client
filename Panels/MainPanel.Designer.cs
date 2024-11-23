@@ -97,7 +97,7 @@ partial class MainPanel
         this.settings_spiceProxy.Name = "settings_spiceProxy";
         this.settings_spiceProxy.Size = new System.Drawing.Size(152, 22);
         this.settings_spiceProxy.Text = "SPICE Proxy";
-        this.settings_spiceProxy.Click += new System.EventHandler(this.openSpiceProxyPanel);
+        this.settings_spiceProxy.Click += new System.EventHandler(this.OpenSpiceProxyPanel);
         // 
         // MainPanel
         // 

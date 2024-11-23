@@ -62,7 +62,7 @@ public partial class MainPanel : Form
         }
     }
 
-    private void AddMachine2Panel(int id, MachineData machineData)
+    private void AddMachine2Panel(MachineData machineData)
     {
         const int groupBoxWidth = 150;
         const int groupBoxHeight = 150;
@@ -90,7 +90,7 @@ public partial class MainPanel : Form
         {
             Size = new System.Drawing.Size(20, 20),
             Location = new System.Drawing.Point(119, 119),
-            Image = global::Proxmox_Desktop_Client.Properties.Resources.icons_dots,
+            Image = Properties.Resources.icons_dots,
             SizeMode = PictureBoxSizeMode.StretchImage
         };
 
@@ -99,9 +99,9 @@ public partial class MainPanel : Form
         var menuItem2 = new ToolStripMenuItem("Spice");
         var menuItem3 = new ToolStripMenuItem("xTermJS");
 
-        menuItem1.Click += (sender, e) => webClient(machineData, "novnc");
-        menuItem2.Click += (sender, e) => Spice_Client(machineData.Vmid);
-        menuItem3.Click += (sender, e) => webClient(machineData, "xtermjs");
+        menuItem1.Click += (_, _) => WebClient(machineData, "novnc");
+        menuItem2.Click += (_, _) => Spice_Client(machineData.Vmid);
+        menuItem3.Click += (_, _) => WebClient(machineData, "xtermjs");
             
         menuItem1.Enabled = false;
         menuItem2.Enabled = false;
@@ -110,7 +110,7 @@ public partial class MainPanel : Form
         contextMenu.Items.AddRange(new ToolStripItem[] { menuItem1, menuItem2, menuItem3 });
         newPbDots.ContextMenuStrip = contextMenu;
 
-        newPbDots.MouseClick += (sender, e) =>
+        newPbDots.MouseClick += (_, e) =>
         {
             if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right)
             {
@@ -123,8 +123,8 @@ public partial class MainPanel : Form
             Size = new System.Drawing.Size(126, 126),
             Location = new System.Drawing.Point(13, 13),
             Image = machineData.Type == "lxc" ? 
-                global::Proxmox_Desktop_Client.Properties.Resources.lxc_logo : 
-                global::Proxmox_Desktop_Client.Properties.Resources.vm_logo,
+                Properties.Resources.lxc_logo : 
+                Properties.Resources.vm_logo,
             SizeMode = PictureBoxSizeMode.StretchImage
         };
 
@@ -143,7 +143,7 @@ public partial class MainPanel : Form
             
             if(machineData.Type == "qemu")
             {
-                menuItem2.Enabled = (bool) CheckSpiceAble(machineData);
+                menuItem2.Enabled = CheckSpiceAble(machineData);
             }    
         }
             
@@ -151,9 +151,10 @@ public partial class MainPanel : Form
             
     }
 
-    private void webClient(MachineData machineData, string RemoteType)
+    private static void WebClient(MachineData machineData, string remoteType)
     {
-        NoVNCClient webClient = new NoVNCClient(Program._Api, machineData, RemoteType);
+        // ReSharper disable once UnusedVariable
+        NoVNCClient noVncClient = new NoVNCClient(Program._Api, machineData, remoteType);
     }
         
     private void Spice_Client(int vmid)
@@ -162,10 +163,10 @@ public partial class MainPanel : Form
         spiceClient.RequestSpiceConnection();
     }
 
-    private bool CheckSpiceAble(MachineData Machine)
+    private bool CheckSpiceAble(MachineData machine)
     {
-        string node = Machine.NodeName;
-        string vmid = Machine.Vmid.ToString();
+        string node = machine.NodeName;
+        string vmid = machine.Vmid.ToString();
             
         // Fetch the JSON string from the API
         string jsonString = _api.GetRequest($"nodes/{node}/qemu/{vmid}/status/current");
@@ -190,7 +191,7 @@ public partial class MainPanel : Form
     {
         foreach (var machine in _api.Machines)
         {
-            AddMachine2Panel(machine.Vmid, machine);
+            AddMachine2Panel(machine);
         }
     }
 
@@ -211,7 +212,7 @@ public partial class MainPanel : Form
         theWindow.Show();
     }
 
-    private void openSpiceProxyPanel(object sender, EventArgs e)
+    private void OpenSpiceProxyPanel(object sender, EventArgs e)
     {
         if (Program._Panels.ContainsKey("SpiceProxyPanel"))
         {
