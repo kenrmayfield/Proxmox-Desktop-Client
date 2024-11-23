@@ -128,9 +128,8 @@
         </Compile>
         <Compile Include="Classes\consoles\SpiceClient.cs" />
         <Compile Include="Classes\pveAPI\ApiClient.cs" />
-        <Compile Include="Classes\pveAPI\objects\apiTicket.cs" />
+        <Compile Include="Classes\pveAPI\objects\dataTicket.cs" />
         <Compile Include="Classes\pveAPI\objects\dataObjects.cs" />
-        <Compile Include="Classes\pveAPI\objects\dataServerUser.cs" />
         <Compile Include="Classes\pveAPI\UserPermissions.cs" />
         <Compile Include="Classes\Ticker.cs" />
         <Compile Include="Panels\ClientLogin.cs">
@@ -186,15 +185,13 @@
         <None Include="App.config" />
     </ItemGroup>
     <ItemGroup>
+      <Content Include="Notes\Notes.txt" />
       <Content Include="Resources\Icons\default-icon.ico" />
       <Content Include="Resources\Icons\default.png" />
       <Content Include="Resources\icons_dots.png" />
       <Content Include="Resources\Images\lxc_logo.png" />
       <Content Include="Resources\lxc_logo.png" />
       <Content Include="Resources\vm_logo.png" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Notes\" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <Import Project="..\packages\Baseclass.Contrib.Nuget.Output.2.4.4\build\Baseclass.Contrib.Nuget.Output.targets" Condition="Exists('..\packages\Baseclass.Contrib.Nuget.Output.2.4.4\build\Baseclass.Contrib.Nuget.Output.targets')" />

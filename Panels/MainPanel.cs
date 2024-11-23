@@ -25,17 +25,16 @@ namespace Proxmox_Desktop_Client
             Show();
         }
 
-        private async void RefreshContent(object sender, EventArgs e)
+        private void RefreshContent(object sender, EventArgs e)
         {
-            await _api.GetPermissionsAsync();
-            await GetNodesAndMachinesAsync();
+            GetNodesAndMachines();
             ProcessMachineList();
         }
 
-        public async Task GetNodesAndMachinesAsync()
+        public void GetNodesAndMachines()
         {
             var allMachines = new List<MachineData>();
-            string nodesJson = await _api.GetAsync("nodes");
+            string nodesJson = _api.GetRequest("nodes");
 
             if (nodesJson != null)
             {
@@ -43,18 +42,18 @@ namespace Proxmox_Desktop_Client
 
                 foreach (var node in nodesRoot.Data)
                 {
-                    await AddMachinesFromNodeAsync(node, "lxc", allMachines);
-                    await AddMachinesFromNodeAsync(node, "qemu", allMachines);
+                    AddMachinesFromNode(node, "lxc", allMachines);
+                    AddMachinesFromNode(node, "qemu", allMachines);
                 }
             }
 
             _api.Machines = allMachines.OrderBy(data => data.Vmid).ToList();
         }
 
-        private async Task AddMachinesFromNodeAsync(NodeData node, string type, List<MachineData> allMachines)
+        private void AddMachinesFromNode(NodeData node, string type, List<MachineData> allMachines)
         {
             string path = $"nodes/{node.Node}/{type}";
-            string json = await _api.GetAsync(path);
+            string json = _api.GetRequest(path);
 
             if (json != null)
             {
@@ -67,7 +66,7 @@ namespace Proxmox_Desktop_Client
             }
         }
 
-        private async void AddMachine2Panel(int id, MachineData machineData)
+        private void AddMachine2Panel(int id, MachineData machineData)
         {
             const int groupBoxWidth = 150;
             const int groupBoxHeight = 150;
@@ -148,7 +147,7 @@ namespace Proxmox_Desktop_Client
             
                 if(machineData.Type == "qemu")
                 {
-                    menuItem2.Enabled = (bool) await CheckSpiceAble(machineData);
+                    menuItem2.Enabled = (bool) CheckSpiceAble(machineData);
                 }    
             }
             
@@ -167,13 +166,13 @@ namespace Proxmox_Desktop_Client
             await spiceClient.RequestSpiceConnection();
         }
 
-        private async Task<bool> CheckSpiceAble(MachineData Machine)
+        private bool CheckSpiceAble(MachineData Machine)
         {
             string node = Machine.NodeName;
             string vmid = Machine.Vmid.ToString();
             
             // Fetch the JSON string from the API
-            string jsonString = await _api.GetAsync($"nodes/{node}/qemu/{vmid}/status/current");
+            string jsonString = _api.GetRequest($"nodes/{node}/qemu/{vmid}/status/current");
             
             // Parse the JSON string
             var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(jsonString);

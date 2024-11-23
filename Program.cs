@@ -11,11 +11,11 @@ namespace Proxmox_Desktop_Client
     static class Program
     {
         // Create a new instance of Configurations with automatic saving
-        public static Configurations    _Config = new Configurations();
-        public static Ticker            _Ticker = new Ticker();
-        public static Dictionary<string, object> _Panels = new Dictionary<string, object>();
-        public static ApiClient         _Api;
-        public static UserPermissions   _Permissions;
+        public static Configurations                _Config = new Configurations();
+        public static Ticker                        _Ticker = new Ticker();
+        public static Dictionary<string, object>    _Panels = new Dictionary<string, object>();
+        public static ApiClient                     _Api;
+        public static UserPermissions               _Permissions;
     
         /// <summary>
         /// The main entry point for the application.

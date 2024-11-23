@@ -144,3 +144,12 @@ public class SpiceObject
     public string Host { get; set; }
 }
 
+public class dataServerInfo
+{
+    public string server; 
+    public string port; 
+    public bool skipSSL;
+    public string username;
+    public string password;
+    public string realm;
+}

@@ -32,8 +32,8 @@ namespace Proxmox_Desktop_Client.Classes.consoles
 
             // Windows Configs
             CenterToScreen();
-            varServer = Api._ServerUserData.server;
-            varPort = Api._ServerUserData.port;
+            varServer = Api.DataServerInfo.server;
+            varPort = Api.DataServerInfo.port;
             consoleType = Machine.Type == "qemu" ? "kvm" : Machine.Type;
             remoteType = Remote;
             vmid = Machine.Vmid.ToString();
@@ -66,7 +66,7 @@ namespace Proxmox_Desktop_Client.Classes.consoles
                     return;
                 }
 
-                string ticketValue = _Api._apiTicket.ticket;
+                string ticketValue = _Api.DataTicket.ticket;
 
                 var cookie = webView.CoreWebView2.CookieManager.CreateCookie(
                     "PVEAuthCookie",

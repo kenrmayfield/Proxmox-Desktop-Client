@@ -35,7 +35,7 @@ public class SpiceClient
         postData.Add("node", _Machine.NodeName);
         postData.Add("vmid", _Machine.Vmid.ToString());
         
-        string results = await _Api.PostAsync("nodes/"+ _Machine.NodeName +"/qemu/"+_Machine.Vmid+"/spiceproxy", postData);
+        string results = _Api.PostRequest("nodes/"+ _Machine.NodeName +"/qemu/"+_Machine.Vmid+"/spiceproxy", postData);
         Program.DebugPoint(results);
         var rootObject = ConvertJsonToVVFormat(results);
         LaunchVirtViewer(rootObject);
@@ -52,7 +52,7 @@ public class SpiceClient
         // Extract necessary fields
         string toggleFullscreen = jsonData["toggle-fullscreen"].ToString();
         //string proxy = jsonData["proxy"].ToString();
-        string proxy = "http://" + _Api._ServerUserData.server + ":3128";
+        string proxy = "http://" + _Api.DataServerInfo.server + ":3128";
         if (proxyEnabled)
         {
             proxy = "http://" + proxyServer + ":" + proxyPort;

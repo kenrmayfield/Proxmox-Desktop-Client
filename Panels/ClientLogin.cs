@@ -1,80 +1,94 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Proxmox_Desktop_Client.Classes;
 using Proxmox_Desktop_Client.Classes.pveAPI;
+using Proxmox_Desktop_Client.Classes.pveAPI.objects;
 
 namespace Proxmox_Desktop_Client
 {
     public partial class ClientLogin : Form
     {
-        private readonly Ticker _ticker;
-        private ApiClient _api;
-
         public ClientLogin()
         {
-            _ticker = Program._Ticker;
+            // Init ClientForm
             InitializeComponent();
+            
+            // Store Panel for Global Reference
             Program._Panels.Add("ClientLogin", this);
+            
+            // Preset Client Login Form & Shrink Window
             panel_credentials.Visible = false;
             Width = 290;
+            
+            // Load Credentials from Storage and test if server accessible
             LoadCredentials();
-            _ticker.Start("SessionCheck", 60000, null);
         }
-
+        
         private void ClickOtp(object sender, EventArgs e)
         {
             textBox_otp.Text = string.Empty;
             textBox_otp.Visible = checkBox_otp.Checked;
         }
 
-        private async void ClickCheckServer(object sender = null, EventArgs e = null)
+        private void ClickCheckServer(object sender = null, EventArgs e = null)
         {
+            // Define & Pull Variables from Form
             string server = textBox_server.Text;
             string port = textBox_port.Text;
             bool validateSsl = checkBox_ssl.Checked;
             
-            this.panel_credentials.Enabled = false;
-            this.panel_server.Enabled = false;
-            this.Width = 290;
+            // Disable Fields & Shrink ClientLogin Window
+            panel_credentials.Enabled = false;
+            panel_server.Enabled = false;
+            Width = 290;
+            
+            // Recenter Screen
             CenterToScreen();
             
-            Program.DebugPoint($"Connecting to server: {server}:{port}, SSL:{validateSsl}");
-            _api = new ApiClient(server, port, validateSsl);
+            // Test Connection
+            Program._Api = new ApiClient(server, port, validateSsl);
             
-            Program.DebugPoint($"Collecting Realm Data...");
-            var realms = await _api.GetRealmsAsync();
-
-            Program.DebugPoint($"Validating Realm Data...");
+            // Get Realms            
+            List<RealmData> realms = Program._Api.GetRealms();
+            
+            // Realms Valid
             if (realms != null && realms.Count > 0)
             {
+                // Attach Data to Realms comboBox
                 comboBox_realm.DataSource = realms;
                 comboBox_realm.DisplayMember = "Comment";
                 comboBox_realm.ValueMember = "Realm";
                 
+                // Set Default Selected
                 string savedRealm = (string)Program._Config.GetSetting("Login_Realm");
                 if (!string.IsNullOrEmpty(savedRealm))
                 {
                     comboBox_realm.SelectedValue = savedRealm;
+                } else
+                {
+                    comboBox_realm.SelectedValue = "pam";
                 }
                 
-                Program.DebugPoint($"Has Realm Data...");
+                // Expand Client Login for next step & enable fields.
                 panel_credentials.Visible = true;
                 Width = 570;
             }
             else
             {   
-                Program.DebugPoint($"No Realm Data/Connection Error...");
+                // If Server is Offline, Reset State
                 comboBox_realm.DataSource = null;
                 Width = 290;
             }
             
+            // Enable Fields & Center ClientLogin Window
             CenterToScreen();
-            this.panel_credentials.Enabled = true;
-            this.panel_server.Enabled = true;
+            panel_credentials.Enabled = true;
+            panel_server.Enabled = true;
         }
 
-        private async void ValidateLogin(object sender, EventArgs e)
+        private void ValidateLogin(object sender, EventArgs e)
         {
             string server = textBox_server.Text;
             string port = textBox_port.Text;
@@ -86,14 +100,13 @@ namespace Proxmox_Desktop_Client
 
             panel_credentials.Enabled = false;
             panel_server.Enabled = false;
-            _api = new ApiClient(server, port, validateSsl);
+            Program._Api = new ApiClient(server, port, validateSsl);
 
             if (!checkBox_otp.Checked) { otp = null; } 
 
-            if (await _api.LoginAsync(username, password, realm, otp))
+            if (Program._Api.LoginRequest(username, password, realm, otp))
             {
                 SaveCredentials();
-                Program._Api = _api;
                 
                 if (Program._Panels.ContainsKey("MainPanel"))
                 {
