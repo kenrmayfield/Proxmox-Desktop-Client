@@ -5,7 +5,8 @@ A Windows Desktop Client for Proxmox VE.
 
 ## About
 It's purpose is as designed.  A way to remote virtual machines in my homelab without having to log in to Proxmox WebGUI.
-The intent mostly was for the use of SPICE (virt-viewer) connectivity as some of my remote needs I can't use RDP but console view.
+The intent was to quickly remote my virtual machines without the need to login and navigate the full Proxmox GUI.  The other 
+solution out there only supported SPICE and I have containers and Non-Spice virtual machines I want to access at the Console level.
 
 ## Requirements for SPICE
 - Virt-viewer && UsbDk (https://www.spice-space.org/download.html).
