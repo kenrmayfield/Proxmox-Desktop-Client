@@ -13,14 +13,17 @@ namespace Proxmox_Desktop_Client.Classes.consoles
         private readonly MachineData machine;
         private WebView2 webView;
 
-        public NoVncClient(MachineData machine, string remote = "novcs")
+        public NoVncClient(MachineData machine)
         {
             this.machine = machine;
             InitializeComponent();
+
+        }
+        public void RequestWebConnection(string remote = "novcs")
+        {
             CenterToScreen();
             InitializeWebView(remote);
         }
-
         private async void InitializeWebView(string remoteType)
         {
             if (remoteType == "novnc")

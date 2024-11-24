@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
@@ -167,9 +168,9 @@ public partial class MainPanel : Form
         powerContextMenu.Items.AddRange(new ToolStripItem[] { pMenuItem1, pMenuItem2, pMenuItem3, pMenuItem4, pMenuItem5, pMenuItem6, pMenuItem7 });
 
         // Remote Set Click Actions
-        rMenuItem1.Click += (_, _) => WebClient(machineData, "novnc");
-        rMenuItem2.Click += (_, _) => SpiceClient(machineData.Vmid);
-        rMenuItem3.Click += (_, _) => WebClient(machineData, "xtermjs");
+        rMenuItem1.Click += (_, _) => WebThread(machineData, "novnc");
+        rMenuItem2.Click += (_, _) => SpiceThread(machineData.Vmid);
+        rMenuItem3.Click += (_, _) => WebThread(machineData, "xtermjs");
         
         // Power Set Click Actions
         pMenuItem1.Click += (_, _) => PowerRequest("start", machineData);
@@ -319,6 +320,36 @@ public partial class MainPanel : Form
         Program._Panels.Add("SpiceProxyPanel", panelSpiceProxy);
         panelSpiceProxy.Show();
     }
+    // New Thread for Consoles
+    private static void InvokeOnUIThread(Action action)
+    {
+        if (Application.OpenForms.Count > 0)
+        {
+            var form = Application.OpenForms[0]; // Get the main form
+            if (form.InvokeRequired)
+            {
+                form.Invoke(action);
+            }
+            else
+            {
+                action();
+            }
+        }
+        else
+        {
+            throw new InvalidOperationException("No open forms available.");
+        }
+    }
+
+    private static void SpiceThread(int vmid)
+    {
+        InvokeOnUIThread(() => SpiceClient(vmid));
+    }
+
+    private static void WebThread(MachineData machineData, string remoteType)
+    {
+        InvokeOnUIThread(() => WebClient(machineData, remoteType));
+    }
     
     // Opening Consoles
     private static void SpiceClient(int vmid)
@@ -330,7 +361,9 @@ public partial class MainPanel : Form
     {
         // ReSharper disable once UnusedVariable
         // ReSharper disable once ObjectCreationAsStatement
-        new NoVncClient(machineData, remoteType);
-    }
+        var webClient = new NoVncClient(machineData);
+        webClient.RequestWebConnection(remoteType);
+        
+    }  
     
 }
