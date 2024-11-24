@@ -19,7 +19,6 @@ namespace Proxmox_Desktop_Client.Classes.consoles
 
             InitializeComponent();
             CenterToScreen();
-
             InitializeWebView(remote);
         }
 
@@ -59,7 +58,6 @@ namespace Proxmox_Desktop_Client.Classes.consoles
                 
                 string consoleType = machine.Type == "qemu" ? "kvm" : machine.Type;
                 string noVncUrl = $"https://{Program._Api.DataServerInfo.server}:{Program._Api.DataServerInfo.port}/?console={consoleType}&{remoteType}=1&vmid={machine.Vmid}&vmname={machine.Name}&node={machine.NodeName}&resize=scale&cmd=";
-                Program.DebugPoint($"Navigating to URL: {noVncUrl}");
 
                 webView.CoreWebView2.Navigate(noVncUrl);
                 
@@ -75,20 +73,17 @@ namespace Proxmox_Desktop_Client.Classes.consoles
                             console.error('Fullscreen button not found.');
                         }
                         
-                        // Step 1: Retrieve the element by ID
-                        const statusElement = document.getElementById('noVNC_status');
-
-                        // Step 2: Create a MutationObserver
+                        const statusNoVNCelement = document.getElementById('noVNC_status');
                         const observer = new MutationObserver((mutationsList) => {
                             // Step 3: Iterate through the mutations
                             for (const mutation of mutationsList) {
                                 // Check if the mutation is related to attributes or child nodes
                                 if (mutation.type === 'attributes' || mutation.type === 'childList') {
                                     // Step 4: Send the mutation details as a message
-                                    if (statusElement.innerHTML.includes('Error 403')) {
+                                    if (statusNoVNCelement.innerHTML.includes('403')) {
                                         window.chrome.webview.postMessage('resource403Error');
                                     }
-                                    if (statusElement.innerHTML.includes('Connected')) {
+                                    if (statusNoVNCelement.innerHTML.includes('Connected')) {
                                     window.chrome.webview.postMessage('sessionConnected');
                                     }
                                     
@@ -96,9 +91,30 @@ namespace Proxmox_Desktop_Client.Classes.consoles
                             }
                         });
 
-                        // Step 5: Start observing the noVNC_status element for changes
-                        if (statusElement) {
-                            observer.observe(statusElement, { attributes: true, childList: true, subtree: true });
+                        if (statusNoVNCelement) {
+                            observer.observe(statusNoVNCelement, { attributes: true, childList: true, subtree: true });
+                        }
+                        
+                        const statusXJSelement = document.getElementById('status_bar');
+                        const observer2 = new MutationObserver((mutationsList) => {
+                            // Step 3: Iterate through the mutations
+                            for (const mutation of mutationsList) {
+                                // Check if the mutation is related to attributes or child nodes
+                                if (mutation.type === 'attributes' || mutation.type === 'childList') {
+                                    // Step 4: Send the mutation details as a message
+                                    if (statusXJSelement.innerHTML.includes('403')) {
+                                        window.chrome.webview.postMessage('resource403Error');
+                                    }
+                                    if (statusXJSelement.innerHTML.includes('Connected')) {
+                                    window.chrome.webview.postMessage('sessionConnected');
+                                    }
+                                    
+                                }
+                            }
+                        });
+
+                        if (statusXJSelement) {
+                            observer2.observe(statusXJSelement, { attributes: true, childList: true, subtree: true });
                         }
                         
                     });
@@ -113,13 +129,12 @@ namespace Proxmox_Desktop_Client.Classes.consoles
             {
                 Program.DebugPoint(JsonConvert.SerializeObject(ex));
             }
-
+            
         }
 
         private void WebView_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
             string message = e.TryGetWebMessageAsString();
-            Program.DebugPoint($"Message received: {message}");
             
             if (message == "toggleFullscreen")
             {
@@ -133,7 +148,6 @@ namespace Proxmox_Desktop_Client.Classes.consoles
             {
                 MessageBox.Show("You do not have sufficent permissions to access the console.","Permission Denied");
                 Close();
-                Dispose();
             }
         }
 
@@ -149,6 +163,13 @@ namespace Proxmox_Desktop_Client.Classes.consoles
                 FormBorderStyle = FormBorderStyle.Sizable;
                 WindowState = FormWindowState.Normal;
             }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            webView.Dispose();
+            Dispose();
         }
     }
 }

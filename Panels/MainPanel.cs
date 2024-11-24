@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Proxmox_Desktop_Client.Classes.consoles;
@@ -94,21 +95,38 @@ public partial class MainPanel : Form
             SizeMode = PictureBoxSizeMode.StretchImage
         };
 
+        // Shutdown/Reboot/Pause/Hibernate/Stop/Reset
         var contextMenu = new ContextMenuStrip();
-        var menuItem1 = new ToolStripMenuItem("NoVNC");
-        var menuItem2 = new ToolStripMenuItem("Spice");
-        var menuItem3 = new ToolStripMenuItem("xTermJS");
+        var menuItem1 = new ToolStripMenuItem("Console");
+        var menuItem2 = new ToolStripMenuItem("Power");
+        
+        var powerContextMenu = new ContextMenuStrip();
+        var pMenuItem1 = new ToolStripMenuItem("Start");
+        var pMenuItem2 = new ToolStripMenuItem("Shutdown");
+        var pMenuItem3 = new ToolStripMenuItem("Reboot");
+        var pMenuItem4 = new ToolStripMenuItem("Pause");
+        var pMenuItem5 = new ToolStripMenuItem("Hibernate");
+        var pMenuItem6 = new ToolStripMenuItem("Stop");
+        var pMenuItem7 = new ToolStripMenuItem("Reset");
 
-        menuItem1.Click += (_, _) => WebClient(machineData, "novnc");
-        menuItem2.Click += (_, _) => Spice_Client(machineData.Vmid);
-        menuItem3.Click += (_, _) => WebClient(machineData, "xtermjs");
-            
-        menuItem1.Enabled = false;
-        menuItem2.Enabled = false;
-        menuItem3.Enabled = false;
-            
-        contextMenu.Items.AddRange(new ToolStripItem[] { menuItem1, menuItem2, menuItem3 });
+        var remoteContextMenu  = new ContextMenuStrip();
+        var remoteOptionItem1 = new ToolStripMenuItem("NoVNC");
+        var remoteOptionItem2 = new ToolStripMenuItem("Spice");
+        var remoteOptionItem3 = new ToolStripMenuItem("xTermJS");
+        remoteOptionItem1.Click += (_, _) => WebClient(machineData, "novnc");
+        remoteOptionItem2.Click += (_, _) => Spice_Client(machineData.Vmid);
+        remoteOptionItem3.Click += (_, _) => WebClient(machineData, "xtermjs");
+        remoteOptionItem1.Enabled = false;
+        remoteOptionItem2.Enabled = false;
+        remoteOptionItem3.Enabled = false;
+        
+        contextMenu.Items.AddRange(new ToolStripItem[] { menuItem1, menuItem2 });
+        remoteContextMenu.Items.AddRange(new ToolStripItem[] { remoteOptionItem1, remoteOptionItem2, remoteOptionItem3 });
+        powerContextMenu.Items.AddRange(new ToolStripItem[] { pMenuItem1, pMenuItem2, pMenuItem3, pMenuItem4, pMenuItem5, pMenuItem6, pMenuItem7 });
+        
         newPbDots.ContextMenuStrip = contextMenu;
+        menuItem1.DropDown = remoteContextMenu;
+        menuItem2.DropDown = powerContextMenu;
 
         newPbDots.MouseClick += (_, e) =>
         {
@@ -132,29 +150,28 @@ public partial class MainPanel : Form
         newGroupBox.Controls.Add(newPbImg);
             
         panel_machines.Controls.Add(newGroupBox);
-            
+        
+        // RemoteMenu Options Changes    
         if (machineData.Status == "running")
         {
-            menuItem1.Enabled = true;
+            remoteOptionItem1.Enabled = true;
             if(machineData.Type == "lxc" || machineData.Serial == 1)
             {
-                menuItem3.Enabled = true;    
+                remoteOptionItem3.Enabled = true;    
             }
             
             if(machineData.Type == "qemu")
             {
-                menuItem2.Enabled = CheckSpiceAble(machineData);
+                remoteOptionItem2.Enabled = CheckSpiceAble(machineData);
             }    
-        }
-            
-            
-            
+        } 
     }
 
     private static void WebClient(MachineData machineData, string remoteType)
     {
         // ReSharper disable once UnusedVariable
-        NoVncClient noVncClient = new NoVncClient(machineData, remoteType);
+        // ReSharper disable once ObjectCreationAsStatement
+        new NoVncClient(machineData, remoteType);
     }
         
     private void Spice_Client(int vmid)
