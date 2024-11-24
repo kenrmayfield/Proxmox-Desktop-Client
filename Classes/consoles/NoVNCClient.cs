@@ -16,7 +16,6 @@ namespace Proxmox_Desktop_Client.Classes.consoles
         public NoVncClient(MachineData machine, string remote = "novcs")
         {
             this.machine = machine;
-
             InitializeComponent();
             CenterToScreen();
             InitializeWebView(remote);
@@ -24,6 +23,16 @@ namespace Proxmox_Desktop_Client.Classes.consoles
 
         private async void InitializeWebView(string remoteType)
         {
+            if (remoteType == "novnc")
+            {
+                Name = "NoVNC";
+                Text = "NoVNC";
+            } else
+            {
+                Name = "xTermJS";
+                Text = "xTermJS";
+            }
+            
             try
             {
                 webView = new WebView2

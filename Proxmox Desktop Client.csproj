@@ -152,6 +152,9 @@
         </Compile>
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <EmbeddedResource Include="Classes\consoles\NoVNCClient.resx">
+          <DependentUpon>NoVNCClient.cs</DependentUpon>
+        </EmbeddedResource>
         <EmbeddedResource Include="Panels\ClientLogin.resx">
           <DependentUpon>ClientLogin.cs</DependentUpon>
         </EmbeddedResource>
