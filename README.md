@@ -5,34 +5,35 @@
 A Windows Desktop Client for Proxmox VE.
 
 ## About
-
 It's purpose is as designed. A way to remote virtual machines in my homelab without having to log in to Proxmox WebGUI.
 The intent was to quickly remote my virtual machines without the need to login and navigate the full Proxmox GUI. The
-other
-solution out there only supported SPICE and I have containers and Non-Spice virtual machines I want to access at the
+other solution out there only supported SPICE and I have containers and Non-Spice virtual machines I want to access at the
 Console level.
 
 ## Requirements for SPICE
-
 - Virt-viewer && UsbDk (https://www.spice-space.org/download.html).
 - Dot Net 4.8.1 or Newer
 - WebView2 (Edge)
 
 ## Functionality
-
 - Plain & TOTP Login
 - Remote (NoVNC/SPICE/xtermJS)
+- Click Tile to Launch (Attempts in Order: SPICE/xTermJS/NoVNC)
+- Power Controls (Move improvements in later release)
+- VM Panel refreshes every 30 seconds, 5 seconds after a power state request.
 - Ability to provide alternate SPICE Proxy Information
 
-## Known Issues
+### Minimum Permissions for a User to See and Remote Virtual Machine
+- VM.Audit
+- VM.Console
 
-- Spice doesn't always get enabled if the VM was the "last" to be loaded from the server. (Fixed - Will be in the next
-  release.)
-- Full-screen/scale issues with NoVNC & xtermJS.  (Fixed - Will be in the next release.)
+### Minimum Permissions for Power Control
+- VM.PowerMgmt
+
+## Known Issues
+- Check out Issue section.
 
 ## Future Road Map
-
-- Refresh VM List / Session Refresh
 - Status Icon (Online/Offline), Currently Menu disabled if offline.
 
 ## Additional Images
