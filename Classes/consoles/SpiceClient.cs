@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using Proxmox_Desktop_Client.Classes.pveAPI.objects;
 
@@ -26,6 +27,11 @@ public class SpiceClient
         postData.Add("vmid", _machine.Vmid.ToString());
         
         string results = Program._Api.PostRequest("nodes/"+ _machine.NodeName +"/qemu/"+_machine.Vmid+"/spiceproxy", postData);
+        if (results == "403")
+        {
+            MessageBox.Show("You do not have sufficent permissions to access the console.","Permission Denied");
+            return;            
+        }
         var rootObject = ConvertJsonToVvFormat(results);
         LaunchVirtViewer(rootObject);
     }

@@ -63,7 +63,7 @@ namespace Proxmox_Desktop_Client.Classes.consoles
 
                 webView.CoreWebView2.Navigate(noVncUrl);
                 
-                // Inject JavaScript to call C# method on button click
+                // Inject JavaScript to call C# method on button click and handle resource loading errors
                 string script = @"
                     document.addEventListener('DOMContentLoaded', function() {
                         var fullscreenButton = document.getElementById('noVNC_fullscreen_button');
@@ -74,11 +74,39 @@ namespace Proxmox_Desktop_Client.Classes.consoles
                         } else {
                             console.error('Fullscreen button not found.');
                         }
+                        
+                        // Step 1: Retrieve the element by ID
+                        const statusElement = document.getElementById('noVNC_status');
+
+                        // Step 2: Create a MutationObserver
+                        const observer = new MutationObserver((mutationsList) => {
+                            // Step 3: Iterate through the mutations
+                            for (const mutation of mutationsList) {
+                                // Check if the mutation is related to attributes or child nodes
+                                if (mutation.type === 'attributes' || mutation.type === 'childList') {
+                                    // Step 4: Send the mutation details as a message
+                                    if (statusElement.innerHTML.includes('Error 403')) {
+                                        window.chrome.webview.postMessage('resource403Error');
+                                    }
+                                    if (statusElement.innerHTML.includes('Connected')) {
+                                    window.chrome.webview.postMessage('sessionConnected');
+                                    }
+                                    
+                                }
+                            }
+                        });
+
+                        // Step 5: Start observing the noVNC_status element for changes
+                        if (statusElement) {
+                            observer.observe(statusElement, { attributes: true, childList: true, subtree: true });
+                        }
+                        
                     });
+                    
                 ";
                 await webView.CoreWebView2.ExecuteScriptAsync(script);
 
-                // Add message handler for fullscreen toggle
+                // Add message handler for fullscreen toggle and resource error
                 webView.CoreWebView2.WebMessageReceived += WebView_WebMessageReceived;
             }
             catch (Exception ex)
@@ -86,16 +114,26 @@ namespace Proxmox_Desktop_Client.Classes.consoles
                 Program.DebugPoint(JsonConvert.SerializeObject(ex));
             }
 
-            Show();
         }
 
         private void WebView_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
             string message = e.TryGetWebMessageAsString();
             Program.DebugPoint($"Message received: {message}");
+            
             if (message == "toggleFullscreen")
             {
                 ToggleFullScreenMode();
+            } 
+            else if (message == "sessionConnected")
+            {
+                Show();
+            }
+            else if (message == "resource403Error")
+            {
+                MessageBox.Show("You do not have sufficent permissions to access the console.","Permission Denied");
+                Close();
+                Dispose();
             }
         }
 

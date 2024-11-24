@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -197,7 +198,11 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
                 }
                 else
                 {
-                    Console.WriteLine($"Error: {response.StatusCode} - {response.Content.ReadAsStringAsync().GetAwaiter().GetResult()}");
+                    Console.WriteLine($"Program Error (Get Request): {JsonConvert.SerializeObject(response)}");
+                    if (response.StatusCode == HttpStatusCode.Forbidden)
+                    {
+                        return "403";
+                    }
                 }
             }
 
@@ -229,7 +234,11 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
                 }
                 else
                 {
-                    Console.WriteLine($"Error: {response.StatusCode} - {response.Content.ReadAsStringAsync().GetAwaiter().GetResult()}");
+                    Console.WriteLine($"Program Error (Post Request): {JsonConvert.SerializeObject(response)}");
+                    if (response.StatusCode == HttpStatusCode.Forbidden)
+                    {
+                        return "403";
+                    }
                 }
             }
 
