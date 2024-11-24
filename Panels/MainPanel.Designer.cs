@@ -32,7 +32,7 @@ partial class MainPanel
     private void InitializeComponent()
     {
         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainPanel));
-        this.panel_machines = new System.Windows.Forms.Panel();
+        this.machinePanel = new System.Windows.Forms.Panel();
         this.menuStrip1 = new System.Windows.Forms.MenuStrip();
         this.rootItem_File = new System.Windows.Forms.ToolStripMenuItem();
         this.File_childItemLogout = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,18 +42,18 @@ partial class MainPanel
         this.menuStrip1.SuspendLayout();
         this.SuspendLayout();
         // 
-        // panel_machines
+        // machinePanel
         // 
-        this.panel_machines.AutoScroll = true;
-        this.panel_machines.BackColor = System.Drawing.Color.Transparent;
-        this.panel_machines.CausesValidation = false;
-        this.panel_machines.Dock = System.Windows.Forms.DockStyle.Fill;
-        this.panel_machines.Location = new System.Drawing.Point(0, 24);
-        this.panel_machines.Margin = new System.Windows.Forms.Padding(20);
-        this.panel_machines.Name = "panel_machines";
-        this.panel_machines.Padding = new System.Windows.Forms.Padding(20);
-        this.panel_machines.Size = new System.Drawing.Size(694, 437);
-        this.panel_machines.TabIndex = 1;
+        this.machinePanel.AutoScroll = true;
+        this.machinePanel.BackColor = System.Drawing.Color.Transparent;
+        this.machinePanel.CausesValidation = false;
+        this.machinePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+        this.machinePanel.Location = new System.Drawing.Point(0, 24);
+        this.machinePanel.Margin = new System.Windows.Forms.Padding(20);
+        this.machinePanel.Name = "machinePanel";
+        this.machinePanel.Padding = new System.Windows.Forms.Padding(20);
+        this.machinePanel.Size = new System.Drawing.Size(694, 437);
+        this.machinePanel.TabIndex = 1;
         // 
         // menuStrip1
         // 
@@ -105,7 +105,7 @@ partial class MainPanel
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
         this.ClientSize = new System.Drawing.Size(694, 461);
-        this.Controls.Add(this.panel_machines);
+        this.Controls.Add(this.machinePanel);
         this.Controls.Add(this.menuStrip1);
         this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
         this.MainMenuStrip = this.menuStrip1;
@@ -126,7 +126,7 @@ partial class MainPanel
     private System.Windows.Forms.ToolStripMenuItem rootSettings;
     private System.Windows.Forms.ToolStripMenuItem settings_spiceProxy;
 
-    private System.Windows.Forms.Panel panel_machines;
+    private System.Windows.Forms.Panel machinePanel;
 
     private System.Windows.Forms.ToolStripMenuItem File_childItemLogout;
 

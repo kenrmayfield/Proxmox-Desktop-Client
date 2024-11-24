@@ -93,7 +93,10 @@ public class MachineData
     public string Status { get; set; }
     
     [JsonProperty("serial")]
-    public int Serial { get; set; }
+    public int Serial { get; set; } 
+    
+    [JsonProperty("lock")]
+    public string Lock { get; set; }
 }
 public class RealmData
 { 
