@@ -1,6 +1,4 @@
-<p align="center">
 [![Screenshot-2024-11-24-022701.png](https://i.postimg.cc/d3ftmHh4/Screenshot-2024-11-24-022701.png)](https://postimg.cc/WqMvs76k)
-</p>p>
 
 # Proxmox Desktop Client
 
