@@ -1,5 +1,5 @@
 <p align="center">
-[![VM Panel](https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022723.png)](https://ibb.co/N92m5d5)
+[<img src="https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022723.png">](https://ibb.co/N92m5d5)
 </p>
 
 # Proxmox Desktop Client
@@ -40,10 +40,10 @@ Console level.
 ## Additional Images
 
 <p align="center">
-[![Login Window](https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022701.png)](https://ibb.co/x8ddjQQ)
-[![VM Panel](https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022723.png)](https://ibb.co/N92m5d5)
-[![Remote Menu](https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022755.png)](https://ibb.co/09j81g1)
-[![Power Menu](https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022815.png)](https://ibb.co/nkqJ6Nc)
-[![NoVNC](https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022854.png)](https://ibb.co/pLLqXfS)
-[![xTermJS](https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-024236.png)](https://ibb.co/LNVSxTV)
+[<img src="https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022701.png">](https://ibb.co/x8ddjQQ)
+[<img src="https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022723.png">](https://ibb.co/N92m5d5)
+[<img src="https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022755.png">](https://ibb.co/09j81g1)
+[<img src="https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022815.png">](https://ibb.co/nkqJ6Nc)
+[<img src="https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022854.png">](https://ibb.co/pLLqXfS)
+[<img src="https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022236.png">](https://ibb.co/LNVSxTV)
 </p>
