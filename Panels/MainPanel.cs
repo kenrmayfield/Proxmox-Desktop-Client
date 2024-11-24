@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Proxmox_Desktop_Client.Classes.consoles;
-using Proxmox_Desktop_Client.Classes.pveAPI;
 using Proxmox_Desktop_Client.Classes.pveAPI.objects;
 
 namespace Proxmox_Desktop_Client.Panels;
 
 public partial class MainPanel : Form
 {
-    private readonly ApiClient _api;
-
     public MainPanel()
     {
         Load += RefreshContent;
-        _api = Program._Api;
+        
         InitializeComponent();
         Show();
     }
@@ -31,7 +27,7 @@ public partial class MainPanel : Form
     public void GetNodesAndMachines()
     {
         var allMachines = new List<MachineData>();
-        string nodesJson = _api.GetRequest("nodes");
+        string nodesJson = Program._Api.GetRequest("nodes");
 
         if (nodesJson != null)
         {
@@ -44,13 +40,13 @@ public partial class MainPanel : Form
             }
         }
 
-        _api.Machines = allMachines.OrderBy(data => data.Vmid).ToList();
+        Program._Api.Machines = allMachines.OrderBy(data => data.Vmid).ToList();
     }
 
     private void AddMachinesFromNode(NodeData node, string type, List<MachineData> allMachines)
     {
         string path = $"nodes/{node.Node}/{type}";
-        string json = _api.GetRequest(path);
+        string json = Program._Api.GetRequest(path);
 
         if (json != null)
         {
@@ -176,7 +172,7 @@ public partial class MainPanel : Form
         
     private void Spice_Client(int vmid)
     {
-        var spiceClient = new SpiceClient(_api.Machines.FirstOrDefault(m => m.Vmid == vmid));
+        var spiceClient = new SpiceClient(Program._Api.Machines.FirstOrDefault(m => m.Vmid == vmid));
         spiceClient.RequestSpiceConnection();
     }
 
@@ -186,7 +182,7 @@ public partial class MainPanel : Form
         string vmid = machine.Vmid.ToString();
             
         // Fetch the JSON string from the API
-        string jsonString = _api.GetRequest($"nodes/{node}/qemu/{vmid}/status/current");
+        string jsonString = Program._Api.GetRequest($"nodes/{node}/qemu/{vmid}/status/current");
             
         // Parse the JSON string
         var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(jsonString);
@@ -206,7 +202,7 @@ public partial class MainPanel : Form
 
     private void ProcessMachineList()
     {
-        foreach (var machine in _api.Machines)
+        foreach (var machine in Program._Api.Machines)
         {
             AddMachine2Panel(machine);
         }
