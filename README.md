@@ -1,6 +1,6 @@
 <p align="center">
-[<img src="https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022723.png">](https://ibb.co/N92m5d5)
-</p>
+[![Screenshot-2024-11-24-022701.png](https://i.postimg.cc/d3ftmHh4/Screenshot-2024-11-24-022701.png)](https://postimg.cc/WqMvs76k)
+</p>p>
 
 # Proxmox Desktop Client
 
@@ -38,12 +38,3 @@ Console level.
 - Status Icon (Online/Offline), Currently Menu disabled if offline.
 
 ## Additional Images
-
-<p align="center">
-[<img src="https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022701.png">](https://ibb.co/x8ddjQQ)
-[<img src="https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022723.png">](https://ibb.co/N92m5d5)
-[<img src="https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022755.png">](https://ibb.co/09j81g1)
-[<img src="https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022815.png">](https://ibb.co/nkqJ6Nc)
-[<img src="https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022854.png">](https://ibb.co/pLLqXfS)
-[<img src="https://i.ibb.co/N92m5d5/Screenshot-2024-11-24-022236.png">](https://ibb.co/LNVSxTV)
-</p>
