@@ -279,7 +279,7 @@ public partial class MainPanel : Form
         
         if (results == "403")
         {
-            MessageBox.Show("You do not have sufficent permissions to access the console.","Permission Denied");
+            MessageBox.Show("You do not have sufficent permissions to change the power state.","Permission Denied");
         }
 
         // Trigger Refresh
