@@ -120,7 +120,7 @@ public class SpiceClient
             {
                 FileName = FindRemoteViewerPath(),
                 Arguments = $"\"{tempFilePath}\"",
-                UseShellExecute = true, // Use shell execute to run the application directly
+                UseShellExecute = false, // Use shell execute to run the application directly
                 RedirectStandardError = true // Redirect standard error if needed
             };
 
@@ -134,14 +134,7 @@ public class SpiceClient
         }
         finally
         {
-            // Clean up the temporary file after a short delay to ensure the process has started
-            Task.Delay(100).ContinueWith(_ =>
-            {
-                if (File.Exists(tempFilePath))
-                {
-                    File.Delete(tempFilePath);
-                }
-            });
+
         }
     }
 
