@@ -51,7 +51,7 @@ partial class MainPanel
         this.machinePanel.Location = new System.Drawing.Point(0, 24);
         this.machinePanel.Margin = new System.Windows.Forms.Padding(20);
         this.machinePanel.Name = "machinePanel";
-        this.machinePanel.Padding = new System.Windows.Forms.Padding(20);
+        this.machinePanel.Padding = new System.Windows.Forms.Padding(20, 20, 20, 40);
         this.machinePanel.Size = new System.Drawing.Size(694, 437);
         this.machinePanel.TabIndex = 1;
         // 
@@ -74,14 +74,14 @@ partial class MainPanel
         // File_childItemLogout
         // 
         this.File_childItemLogout.Name = "File_childItemLogout";
-        this.File_childItemLogout.Size = new System.Drawing.Size(152, 22);
+        this.File_childItemLogout.Size = new System.Drawing.Size(112, 22);
         this.File_childItemLogout.Text = "Logout";
         this.File_childItemLogout.Click += new System.EventHandler(this.ActionLogout);
         // 
         // File_childItemExit
         // 
         this.File_childItemExit.Name = "File_childItemExit";
-        this.File_childItemExit.Size = new System.Drawing.Size(152, 22);
+        this.File_childItemExit.Size = new System.Drawing.Size(112, 22);
         this.File_childItemExit.Text = "Exit";
         this.File_childItemExit.Click += new System.EventHandler(this.ActionExitApplication);
         // 
@@ -95,7 +95,7 @@ partial class MainPanel
         // settings_spiceProxy
         // 
         this.settings_spiceProxy.Name = "settings_spiceProxy";
-        this.settings_spiceProxy.Size = new System.Drawing.Size(152, 22);
+        this.settings_spiceProxy.Size = new System.Drawing.Size(137, 22);
         this.settings_spiceProxy.Text = "SPICE Proxy";
         this.settings_spiceProxy.Click += new System.EventHandler(this.OpenSpiceProxyPanel);
         // 
@@ -111,12 +111,12 @@ partial class MainPanel
         this.MainMenuStrip = this.menuStrip1;
         this.MaximizeBox = false;
         this.MaximumSize = new System.Drawing.Size(710, 500);
-        this.MinimizeBox = false;
         this.MinimumSize = new System.Drawing.Size(710, 500);
         this.Name = "MainPanel";
         this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
         this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
         this.Text = "Proxmox VE";
+        this.Resize += new System.EventHandler(this.ClientLogin_Resize);
         this.menuStrip1.ResumeLayout(false);
         this.menuStrip1.PerformLayout();
         this.ResumeLayout(false);

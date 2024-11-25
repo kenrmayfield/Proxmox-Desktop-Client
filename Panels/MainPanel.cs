@@ -14,11 +14,16 @@ namespace Proxmox_Desktop_Client.Panels;
 public partial class MainPanel : Form
 {
     private Timer refreshTimer;
+    private NotifyIcon notifyIcon;
+    private ContextMenuStrip contextMenu;
+
     public MainPanel()
     {
         Load += RefreshContent;
         InitializeComponent();
-        
+        InitializeNotifyIcon();
+        Resize += ClientLogin_Resize;
+
         // Initialize and configure the timer
         refreshTimer = new Timer(30000); // 30 seconds
         refreshTimer.Elapsed += RefreshContent;
@@ -303,6 +308,7 @@ public partial class MainPanel : Form
     {
         refreshTimer.Stop();
         refreshTimer.Dispose();
+        notifyIcon.Dispose();
         var theWindow = (ClientLogin)Program._Panels["ClientLogin"];
         theWindow.Show();
         base.OnFormClosing(e);
@@ -336,6 +342,32 @@ public partial class MainPanel : Form
         var webClient = new NoVncClient(machineData);
         webClient.RequestWebConnection(remoteType); // Initialize the connection
         webClient.Show(); // Show the form as a non-blocking window
+    }
+    
+    private void InitializeNotifyIcon()
+    {
+        notifyIcon = new NotifyIcon();
+        notifyIcon.Icon = Properties.Resources.icon_proxmox; // Set your desired icon here
+        notifyIcon.Visible = true;
+
+        contextMenu = new ContextMenuStrip();
+        contextMenu.Items.Add("Restore", null, Restore_Click);
+        contextMenu.Items.Add("Exit", null, ActionExitApplication);
+        notifyIcon.ContextMenuStrip = contextMenu;
+    }
+
+    private void ClientLogin_Resize(object sender, EventArgs e)
+    {
+        if (WindowState == FormWindowState.Minimized)
+        {
+            Hide();
+        }
+    }
+
+    private void Restore_Click(object sender, EventArgs e)
+    {
+        Show();
+        WindowState = FormWindowState.Normal;
     }
     
 }
