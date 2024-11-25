@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using Proxmox_Desktop_Client.Classes.pveAPI.objects;
@@ -108,26 +110,39 @@ public class SpiceClient
         // Create a temporary file
         string tempFilePath = Path.GetTempFileName();
 
-        // Write the .vv file contents to the temporary file
-        File.WriteAllText(tempFilePath, spiceObject);
-
-        // Start virt-viewer with the temporary file as an argument
-        // Start virt-viewer with the temporary file as an argument
-        ProcessStartInfo startInfo = new ProcessStartInfo
+        try
         {
-            FileName = FindRemoteViewerPath(),
-            Arguments = $"\"{tempFilePath}\"",
-            UseShellExecute = false,
-            RedirectStandardError = true // Redirect standard error
-        };
+            // Write the .vv file contents to the temporary file
+            File.WriteAllText(tempFilePath, spiceObject);
 
-        using (Process process = Process.Start(startInfo))
+            // Start virt-viewer with the temporary file as an argument
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = FindRemoteViewerPath(),
+                Arguments = $"\"{tempFilePath}\"",
+                UseShellExecute = true, // Use shell execute to run the application directly
+                RedirectStandardError = true // Redirect standard error if needed
+            };
+
+            // Start the process without waiting for it to exit
+            Process.Start(startInfo);
+        }
+        catch (Exception ex)
         {
-            process!.WaitForExit();
+            // Handle exceptions (e.g., logging)
+            Console.Error.WriteLine($"Error launching Virt Viewer: {ex.Message}");
+        }
+        finally
+        {
+            // Clean up the temporary file after a short delay to ensure the process has started
+            Task.Delay(100).ContinueWith(_ =>
+            {
+                if (File.Exists(tempFilePath))
+                {
+                    File.Delete(tempFilePath);
+                }
+            });
         }
     }
-    
-    
-    
-    
+
 }
