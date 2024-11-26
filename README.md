@@ -11,9 +11,9 @@ other solution out there only supported SPICE and I have containers and Non-Spic
 Console level.
 
 ## Requirements for SPICE
-- Virt-viewer && UsbDk (https://www.spice-space.org/download.html).
 - Dot Net 4.8.1 or Newer
-- WebView2 (Edge)
+- Virt-viewer && UsbDk (https://www.spice-space.org/download.html).
+- WebView2 Runtime (https://developer.microsoft.com/en-us/microsoft-edge/webview2/?ch=1&form=MA13LH)
 
 ## Functionality
 - Plain & TOTP Login
