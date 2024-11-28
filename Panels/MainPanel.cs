@@ -311,6 +311,7 @@ public partial class MainPanel : Form
         notifyIcon.Dispose();
         var theWindow = (ClientLogin)Program._Panels["ClientLogin"];
         theWindow.Show();
+        theWindow.LoadCredentials();
         base.OnFormClosing(e);
     }
     

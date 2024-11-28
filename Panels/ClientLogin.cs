@@ -95,13 +95,11 @@ namespace Proxmox_Desktop_Client.Panels
             string username = textBox_username.Text;
             string password = textBox_password.Text;
             string realm = comboBox_realm.SelectedValue as string;
-            string otp = textBox_otp.Text;
+            string otp = checkBox_otp.Checked ? textBox_otp.Text : null;
 
             panel_credentials.Enabled = false;
             panel_server.Enabled = false;
             Program._Api = new ApiClient(server, port, validateSsl);
-
-            if (!checkBox_otp.Checked) { otp = null; } 
 
             if (Program._Api.LoginRequest(username, password, realm, otp))
             {
@@ -123,31 +121,57 @@ namespace Proxmox_Desktop_Client.Panels
 
         private void SaveCredentials()
         {
+            bool remember = checkBox_remember.Checked;
+
             Program._Config.SetSetting("Login_Server", textBox_server.Text);
             Program._Config.SetSetting("Login_Port", textBox_port.Text);
             Program._Config.SetSetting("Login_CheckSSL", checkBox_ssl.Checked);
-            Program._Config.SetSetting("Login_Username", textBox_username.Text);
-            Program._Config.SetSetting("Login_Password", textBox_password.Text);
-            Program._Config.SetSetting("Login_Realm", comboBox_realm.SelectedValue);
-            Program._Config.SetSetting("Login_OTP", checkBox_otp.Checked);
-            Program._Config.SetSetting("Login_Remember", checkBox_remember.Checked);
+            
+            if (remember)
+            {
+                Program._Config.SetSetting("Login_Username", textBox_username.Text);
+                Program._Config.SetSetting("Login_Password", textBox_password.Text);
+                Program._Config.SetSetting("Login_Realm", comboBox_realm.SelectedValue);
+                Program._Config.SetSetting("Login_OTP", checkBox_otp.Checked);
+            }
+            else
+            {
+                Program._Config.SetSetting("Login_Username", "");
+                Program._Config.SetSetting("Login_Password", "");
+                Program._Config.SetSetting("Login_Realm", "pam");
+                Program._Config.SetSetting("Login_OTP", false);
+            }
+
+            Program._Config.SetSetting("Login_Remember", remember);
         }
 
-        private void LoadCredentials()
+        public void LoadCredentials()
         {
-            if (Program._Config.GetSetting("Login_Remember") == null) return;
+            bool remember = (bool)Program._Config.GetSetting("Login_Remember");
 
             textBox_server.Text = (string)Program._Config.GetSetting("Login_Server");
             textBox_port.Text = (string)Program._Config.GetSetting("Login_Port");
             checkBox_ssl.Checked = (bool)Program._Config.GetSetting("Login_CheckSSL");
+
             ClickCheckServer();
-            textBox_username.Text = (string)Program._Config.GetSetting("Login_Username");
-            textBox_password.Text = (string)Program._Config.GetSetting("Login_Password");
-            checkBox_otp.Checked = (bool)Program._Config.GetSetting("Login_OTP");
-            checkBox_remember.Checked = (bool)Program._Config.GetSetting("Login_Remember");
-            if ((bool)Program._Config.GetSetting("Login_OTP")) { textBox_otp.Visible = true; } else { textBox_otp.Visible = false; } 
-            
+
+            if (remember)
+            {
+                textBox_username.Text = (string)Program._Config.GetSetting("Login_Username");
+                textBox_password.Text = (string)Program._Config.GetSetting("Login_Password");
+                checkBox_otp.Checked = (bool)Program._Config.GetSetting("Login_OTP");
+            }
+            else
+            {
+                textBox_username.Text = "";
+                textBox_password.Text = "";
+                checkBox_otp.Checked = false;
+            }
+
+            checkBox_remember.Checked = remember;
+            textBox_otp.Visible = checkBox_otp.Checked;
         }
+
 
         private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
