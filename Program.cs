@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -37,9 +38,10 @@ namespace Proxmox_Desktop_Client
         
         public static void DebugPoint(string content)
         {
-            #if DEBUG
+            if (Debugger.IsAttached)
+            {
                 Console.WriteLine(content);
-            #endif
+            }
         }
         
     }

@@ -86,17 +86,13 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
                 loginData.Add("password", password);
                 loginData.Add("realm", realm);
                 
-                if (otp != null)
-                {
-                    loginData.Add("otp", otp);
-                }
-
                 // Serialize the object to JSON
                 var jsonContent = JsonConvert.SerializeObject(loginData);
                 var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 
                 // Attempt Ticket Request
                 var response = _httpClient.PostAsync("access/ticket", httpContent).GetAwaiter().GetResult();
+                Program.DebugPoint("Program Error (Login Request): " + Environment.NewLine + JsonConvert.SerializeObject(response));
                 
                 // Process If Successful
                 if (response.IsSuccessStatusCode)
@@ -155,10 +151,13 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
                 var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 var response = _httpClient.PostAsync("access/ticket", httpContent).GetAwaiter().GetResult();
                 
-                Console.WriteLine(JsonConvert.SerializeObject(response.Content));
+                Program.DebugPoint("Program Error (TOTPChallengeRequest): " + Environment.NewLine + JsonConvert.SerializeObject(response));
+                
                 if (response.IsSuccessStatusCode)
                 {
-                    dynamic apiResponse = JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+                    string responseData = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    dynamic apiResponse = JsonConvert.DeserializeObject(responseData);
+                    
                     DataTicket = new DataTicket
                     {
                         ticket = apiResponse!.data.ticket,
