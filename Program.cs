@@ -23,16 +23,26 @@ namespace Proxmox_Desktop_Client
         [STAThread]
         static void Main()
         {
-            try
-            {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new ClientLogin());    
-            } catch(Exception ex)
-            {
-                DebugPoint("Program Failure (MAIN): " + Environment.NewLine + ex.StackTrace);
-            }
         
+            string processName = Process.GetCurrentProcess().ProcessName;
+            Process[] processes = Process.GetProcessesByName(processName);
+
+            if (processes.Length > 1)
+            {
+                MessageBox.Show("Program is already running. Check your system tray.", "Already Running");
+                Application.Exit();
+            } else
+            {
+                try
+                {
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
+                    Application.Run(new ClientLogin());    
+                } catch(Exception ex)
+                {
+                    DebugPoint("Program Failure (MAIN): " + Environment.NewLine + ex.StackTrace);
+                }
+            }
             
         }
         
