@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Proxmox_Desktop_Client.Classes.consoles;
 using Proxmox_Desktop_Client.Classes.pveAPI.objects;
+using Label = System.Windows.Forms.Label;
 using Timer = System.Timers.Timer;
 
 namespace Proxmox_Desktop_Client.Panels;
@@ -148,6 +152,17 @@ public partial class MainPanel : Form
                 Properties.Resources.vm_logo,
             SizeMode = PictureBoxSizeMode.StretchImage
         };
+        
+        // Label Status of Virtual Machine
+        var newStatus = new Label()
+        {
+            Name = "Status_" + machineData.Vmid.ToString(),
+            Location = new System.Drawing.Point(0, 110),
+            Anchor = AnchorStyles.Bottom | AnchorStyles.Left,
+            Text = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(machineData.Status.ToLower()),
+            Font = new Font(Font.FontFamily, 7f, FontStyle.Bold),
+            ForeColor = (machineData.Status.ToLower() == "running" ? Color.Green : Color.Red ) 
+        };
 
         // Generate Context Menus
         var mainContextMenu = new ContextMenuStrip();
@@ -228,7 +243,6 @@ public partial class MainPanel : Form
             }
         };
         
-        
         // Set States for Menu Items
         // Remote Items
         remoteContextMenu.Enabled = (machineData.Status == "running");
@@ -248,7 +262,7 @@ public partial class MainPanel : Form
         newPbDots.ContextMenuStrip = mainContextMenu;
         newGroupBox.Controls.Add(newPbDots);
         newGroupBox.Controls.Add(newPbImg);
-        
+        newPbImg.Controls.Add(newStatus);
         machinePanel.Controls.Add(newGroupBox);
 
     }
