@@ -92,7 +92,6 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
                 
                 // Attempt Ticket Request
                 var response = _httpClient.PostAsync("access/ticket", httpContent).GetAwaiter().GetResult();
-                Program.DebugPoint("Program Error (Login Request): " + Environment.NewLine + JsonConvert.SerializeObject(response));
                 
                 // Process If Successful
                 if (response.IsSuccessStatusCode)
@@ -151,8 +150,6 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
                 var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 var response = _httpClient.PostAsync("access/ticket", httpContent).GetAwaiter().GetResult();
                 
-                Program.DebugPoint("Program Error (TOTPChallengeRequest): " + Environment.NewLine + JsonConvert.SerializeObject(response));
-                
                 if (response.IsSuccessStatusCode)
                 {
                     string responseData = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
@@ -191,8 +188,6 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
                 
                 var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 var response = _httpClient.PostAsync("access/ticket", httpContent).GetAwaiter().GetResult();
-                
-                Program.DebugPoint("Program Error (Renew Ticket): " + Environment.NewLine + JsonConvert.SerializeObject(response));
                 
                 if (response.IsSuccessStatusCode)
                 {
