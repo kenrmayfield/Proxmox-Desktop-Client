@@ -178,6 +178,47 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
             }
             
         }
+        public void RenewTicket(object sender = null, EventArgs e = null)
+        {
+            try
+            {
+                Dictionary<string, string> ticketData = new Dictionary<string, string>();
+                ticketData.Add("username", DataTicket.username);
+                ticketData.Add("password", DataTicket.ticket);
+                
+                // Serialize the object to JSON
+                var jsonContent = JsonConvert.SerializeObject(ticketData);
+                
+                var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                var response = _httpClient.PostAsync("access/ticket", httpContent).GetAwaiter().GetResult();
+                
+                Program.DebugPoint("Program Error (Renew Ticket): " + Environment.NewLine + JsonConvert.SerializeObject(response));
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseData = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    dynamic apiResponse = JsonConvert.DeserializeObject(responseData);
+                    
+                    DataTicket = new DataTicket
+                    {
+                        ticket = apiResponse!.data.ticket,
+                        CSRFPreventionToken = apiResponse.data.CSRFPreventionToken,
+                        username = apiResponse.data.username
+                    };
+                    
+                    return;
+                }
+
+                MessageBox.Show("There were problem renewing your ticket.", "API Failure");
+                return;
+            } catch (Exception ex)
+            {
+                MessageBox.Show("There were problem renewing your ticket.", "Application Failure");
+                Program.DebugPoint("Program Error (Renew Ticket): " + Environment.NewLine + ex.StackTrace);
+                return;
+            }
+            
+        }
         
          public string GetRequest(string path)
         {

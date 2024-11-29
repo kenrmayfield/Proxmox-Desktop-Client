@@ -193,9 +193,11 @@
       <Content Include="Resources\Icons\default-icon.ico" />
       <Content Include="Resources\Icons\default.png" />
       <Content Include="Resources\icons_dots.png" />
-      <Content Include="Resources\Images\lxc_logo.png" />
       <Content Include="Resources\lxc_logo.png" />
       <Content Include="Resources\vm_logo.png" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Resources\Images\" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <Import Project="..\packages\Baseclass.Contrib.Nuget.Output.2.4.4\build\Baseclass.Contrib.Nuget.Output.targets" Condition="Exists('..\packages\Baseclass.Contrib.Nuget.Output.2.4.4\build\Baseclass.Contrib.Nuget.Output.targets')" />

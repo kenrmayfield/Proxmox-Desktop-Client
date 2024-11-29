@@ -14,6 +14,7 @@ namespace Proxmox_Desktop_Client.Panels;
 public partial class MainPanel : Form
 {
     private Timer refreshTimer;
+    private Timer refreshTicket;
     private NotifyIcon notifyIcon;
     private ContextMenuStrip contextMenu;
 
@@ -25,10 +26,16 @@ public partial class MainPanel : Form
         Resize += ClientLogin_Resize;
 
         // Initialize and configure the timer
-        refreshTimer = new Timer(30000); // 30 seconds
+        // Reload Panel
+        refreshTimer = new Timer(60000); // 60 seconds
         refreshTimer.Elapsed += RefreshContent;
         refreshTimer.AutoReset = true; // Repeat every interval
         refreshTimer.Enabled = true; // Start the timer
+        
+        refreshTicket = new Timer(5400000); // 1 hour and 30 minutes
+        refreshTicket.Elapsed += Program._Api.RenewTicket;
+        refreshTicket.AutoReset = true; // Repeat every interval
+        refreshTicket.Enabled = true; // Start the timer
         
         Show();
     }
@@ -47,6 +54,7 @@ public partial class MainPanel : Form
         ProcessMachineList();
     }
 
+    
     // Gets Available Virtual Machines from API
     public void GetAllMachines()
     {
