@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Proxmox_Desktop_Client.Classes.consoles;
@@ -17,10 +15,10 @@ namespace Proxmox_Desktop_Client.Panels;
 
 public partial class MainPanel : Form
 {
-    private Timer refreshTimer;
-    private Timer refreshTicket;
-    private NotifyIcon notifyIcon;
-    private ContextMenuStrip contextMenu;
+    private Timer _refreshTimer;
+    private Timer _refreshTicket;
+    private NotifyIcon _notifyIcon;
+    private ContextMenuStrip _contextMenu;
 
     public MainPanel()
     {
@@ -31,15 +29,15 @@ public partial class MainPanel : Form
 
         // Initialize and configure the timer
         // Reload Panel
-        refreshTimer = new Timer(60000); // 60 seconds
-        refreshTimer.Elapsed += RefreshContent;
-        refreshTimer.AutoReset = true; // Repeat every interval
-        refreshTimer.Enabled = true; // Start the timer
+        _refreshTimer = new Timer(60000); // 60 seconds
+        _refreshTimer.Elapsed += RefreshContent;
+        _refreshTimer.AutoReset = true; // Repeat every interval
+        _refreshTimer.Enabled = true; // Start the timer
         
-        refreshTicket = new Timer(5400000); // 1 hour and 30 minutes
-        refreshTicket.Elapsed += Program._Api.RenewTicket;
-        refreshTicket.AutoReset = true; // Repeat every interval
-        refreshTicket.Enabled = true; // Start the timer
+        _refreshTicket = new Timer(5400000); // 1 hour and 30 minutes
+        _refreshTicket.Elapsed += Program._Api.RenewTicket;
+        _refreshTicket.AutoReset = true; // Repeat every interval
+        _refreshTicket.Enabled = true; // Start the timer
         
         Show();
     }
@@ -117,7 +115,7 @@ public partial class MainPanel : Form
         var newGroupBox = new GroupBox
         {
             Name = machineData.Vmid.ToString(),
-            Size = new System.Drawing.Size(groupBoxWidth, groupBoxHeight),
+            Size = new Size(groupBoxWidth, groupBoxHeight),
             Text = $"{machineData.Name} ( {machineData.Vmid} )"
         };
         
@@ -126,7 +124,7 @@ public partial class MainPanel : Form
         int row = index / columns;
         int column = index % columns;
         // Set Positions to GroupBox
-        newGroupBox.Location = new System.Drawing.Point(
+        newGroupBox.Location = new Point(
             margin + column * (groupBoxWidth + padding),
             topMargin + row * (groupBoxHeight + padding)
         );
@@ -135,8 +133,8 @@ public partial class MainPanel : Form
         var newPbDots = new PictureBox
         {
             Name = "Dots_" + machineData.Vmid.ToString(),
-            Size = new System.Drawing.Size(20, 20),
-            Location = new System.Drawing.Point(119, 119),
+            Size = new Size(20, 20),
+            Location = new Point(119, 119),
             Image = Properties.Resources.icons_dots,
             SizeMode = PictureBoxSizeMode.StretchImage
         };
@@ -145,8 +143,8 @@ public partial class MainPanel : Form
         var newPbImg = new PictureBox
         {
             Name = "Icon_"+machineData.Vmid.ToString(),
-            Size = new System.Drawing.Size(126, 126),
-            Location = new System.Drawing.Point(13, 13),
+            Size = new Size(126, 126),
+            Location = new Point(13, 13),
             Image = machineData.Type == "lxc" ? 
                 Properties.Resources.lxc_logo : 
                 Properties.Resources.vm_logo,
@@ -157,7 +155,7 @@ public partial class MainPanel : Form
         var newStatus = new Label()
         {
             Name = "Status_" + machineData.Vmid.ToString(),
-            Location = new System.Drawing.Point(0, 110),
+            Location = new Point(0, 110),
             Anchor = AnchorStyles.Bottom | AnchorStyles.Left,
             Text = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(machineData.Status.ToLower()),
             Font = new Font(Font.FontFamily, 7f, FontStyle.Bold),
@@ -328,9 +326,9 @@ public partial class MainPanel : Form
     // Reopen ClientLogin Window on Close
     protected override void OnFormClosing(FormClosingEventArgs e)
     {
-        refreshTimer.Stop();
-        refreshTimer.Dispose();
-        notifyIcon.Dispose();
+        _refreshTimer.Stop();
+        _refreshTimer.Dispose();
+        _notifyIcon.Dispose();
         var theWindow = (ClientLogin)Program._Panels["ClientLogin"];
         theWindow.Show();
         theWindow.LoadCredentials();
@@ -369,14 +367,14 @@ public partial class MainPanel : Form
     
     private void InitializeNotifyIcon()
     {
-        notifyIcon = new NotifyIcon();
-        notifyIcon.Icon = Properties.Resources.icon_proxmox; // Set your desired icon here
-        notifyIcon.Visible = true;
+        _notifyIcon = new NotifyIcon();
+        _notifyIcon.Icon = Properties.Resources.icon_proxmox; // Set your desired icon here
+        _notifyIcon.Visible = true;
 
-        contextMenu = new ContextMenuStrip();
-        contextMenu.Items.Add("Restore", null, Restore_Click);
-        contextMenu.Items.Add("Exit", null, ActionExitApplication);
-        notifyIcon.ContextMenuStrip = contextMenu;
+        _contextMenu = new ContextMenuStrip();
+        _contextMenu.Items.Add("Restore", null, Restore_Click);
+        _contextMenu.Items.Add("Exit", null, ActionExitApplication);
+        _notifyIcon.ContextMenuStrip = _contextMenu;
     }
 
     private void ClientLogin_Resize(object sender, EventArgs e)
