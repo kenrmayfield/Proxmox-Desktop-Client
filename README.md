@@ -20,7 +20,7 @@ Console level.
 - Remote (NoVNC/SPICE/xtermJS)
 - Click Tile to Launch (Attempts in Order: SPICE/xTermJS/NoVNC)
 - Power Controls (Move improvements in later release)
-- VM Panel refreshes every 30 seconds, 5 seconds after a power state request.
+- VM Panel refreshes every 60 seconds, 5 seconds after a power state request.
 - Ability to provide alternate SPICE Proxy Information
 
 ### Minimum Permissions for a User to See and Remote Virtual Machine
