@@ -1,5 +1,3 @@
-[![Screenshot-2024-11-24-022723.png](https://i.postimg.cc/13Gsf5rW/Screenshot-2024-11-24-022723.png)](https://postimg.cc/DSwtNhDs)
-
 # Proxmox Desktop Client
 
 A Windows Desktop Client for Proxmox VE.
@@ -10,10 +8,13 @@ The intent was to quickly remote my virtual machines without the need to login a
 other solution out there only supported SPICE and I have containers and Non-Spice virtual machines I want to access at the
 Console level.
 
+## Screenshots
+- Placed in Screenshot Folder
+
 ## Requirements for SPICE
 - Dot Net 4.8.1 or Newer
 - Virt-viewer && UsbDk (https://www.spice-space.org/download.html).
-- WebView2 Runtime (https://developer.microsoft.com/en-us/microsoft-edge/webview2/?ch=1&form=MA13LH)
+- WebView2 Runtime (https://developer.microsoft.com/en-us/microsoft-edge/webview2/?form=MA13LH)
 
 ## Functionality
 - Plain & TOTP Login
@@ -34,12 +35,3 @@ Console level.
 - Check out Issue section.
 
 ## Future Road Map
-- Status Icon (Online/Offline), Currently Menu disabled if offline.
-
-## Additional Images
-[![Screenshot-2024-11-24-022701.png](https://i.postimg.cc/d3ftmHh4/Screenshot-2024-11-24-022701.png)](https://postimg.cc/WqMvs76k)
-[![Screenshot-2024-11-24-022723.png](https://i.postimg.cc/13Gsf5rW/Screenshot-2024-11-24-022723.png)](https://postimg.cc/DSwtNhDs)
-[![Screenshot-2024-11-24-022755.png](https://i.postimg.cc/k57983j7/Screenshot-2024-11-24-022755.png)](https://postimg.cc/dhNzPXPf)
-[![Screenshot-2024-11-24-022815.png](https://i.postimg.cc/0QQsWGR3/Screenshot-2024-11-24-022815.png)](https://postimg.cc/ns6gMDLY)
-[![Screenshot-2024-11-24-022854.png](https://i.postimg.cc/G90nmZ8w/Screenshot-2024-11-24-022854.png)](https://postimg.cc/MfYFs3md)
-[![Screenshot-2024-11-24-024236.png](https://i.postimg.cc/XNrZXdGQ/Screenshot-2024-11-24-024236.png)](https://postimg.cc/K4ycHK5M)

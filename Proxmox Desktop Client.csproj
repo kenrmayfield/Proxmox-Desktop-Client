@@ -195,6 +195,11 @@
       <Content Include="Resources\icons_dots.png" />
       <Content Include="Resources\lxc_logo.png" />
       <Content Include="Resources\vm_logo.png" />
+      <None Include="Screenshots\Screenshot - Console Menu.png" />
+      <None Include="Screenshots\Screenshot - Login Window.png" />
+      <None Include="Screenshots\Screenshot - Main Window.png" />
+      <None Include="Screenshots\Screenshot - Power Menu.png" />
+      <None Include="Screenshots\Screenshot - Spice Proxy.png" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Resources\Images\" />
