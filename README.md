@@ -11,10 +11,10 @@ Console level.
 ## Screenshots
 - Placed in Screenshot Folder
 
-## Requirements for SPICE
-- Dot Net 4.8.1 or Newer
-- Virt-viewer && UsbDk (https://www.spice-space.org/download.html).
-- WebView2 Runtime (https://developer.microsoft.com/en-us/microsoft-edge/webview2/?form=MA13LH)
+## Requirements
+- (Program) .Net 4.8.1 or Newer
+- (SPICE) Virt-viewer && UsbDk (https://www.spice-space.org/download.html).
+- (NoVNC/xTermJS) WebView2 Runtime (https://developer.microsoft.com/en-us/microsoft-edge/webview2/?form=MA13LH)
 
 ## Functionality
 - Plain & TOTP Login
