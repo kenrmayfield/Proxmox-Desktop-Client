@@ -147,13 +147,16 @@ namespace Proxmox_Desktop_Client.Panels
 
         public void LoadCredentials()
         {
-            bool remember = (bool)Program._Config.GetSetting("Login_Remember");
+            bool remember = (bool?) Program._Config.GetSetting("Login_Remember") ?? false;
 
-            textBox_server.Text = (string)Program._Config.GetSetting("Login_Server");
-            textBox_port.Text = (string)Program._Config.GetSetting("Login_Port");
-            checkBox_ssl.Checked = (bool)Program._Config.GetSetting("Login_CheckSSL");
-
-            ClickCheckServer();
+            if (remember)
+            {
+                textBox_server.Text = (string)Program._Config.GetSetting("Login_Server");
+                textBox_port.Text = (string)Program._Config.GetSetting("Login_Port");
+                checkBox_ssl.Checked = (bool)Program._Config.GetSetting("Login_CheckSSL");    
+                
+                ClickCheckServer();
+            }
 
             if (remember)
             {
