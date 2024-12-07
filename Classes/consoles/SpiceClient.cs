@@ -77,6 +77,7 @@ public class SpiceClient
         vvFileContent += $"type={type}\n";
         vvFileContent += $"proxy={proxy}\n";
         vvFileContent += $"toggle-fullscreen={toggleFullscreen}\n";
+        vvFileContent += $"fullscreen=1\n";
         vvFileContent += $"title={title}";
 
         return vvFileContent.Trim();
