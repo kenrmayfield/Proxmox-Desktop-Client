@@ -23,6 +23,7 @@ namespace Proxmox_Desktop_Client.Classes.consoles
         {
             CenterToScreen();
             InitializeWebView(remote);
+            this.WindowState = FormWindowState.Maximized;
         }
         private async void InitializeWebView(string remoteType)
         {
