@@ -39,6 +39,7 @@ partial class MainPanel
         this.File_childItemExit = new System.Windows.Forms.ToolStripMenuItem();
         this.rootSettings = new System.Windows.Forms.ToolStripMenuItem();
         this.settings_spiceProxy = new System.Windows.Forms.ToolStripMenuItem();
+        this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         this.menuStrip1.SuspendLayout();
         this.SuspendLayout();
         // 
@@ -57,7 +58,7 @@ partial class MainPanel
         // 
         // menuStrip1
         // 
-        this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.rootItem_File, this.rootSettings });
+        this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.rootItem_File, this.rootSettings, this.aboutToolStripMenuItem });
         this.menuStrip1.Location = new System.Drawing.Point(0, 0);
         this.menuStrip1.Name = "menuStrip1";
         this.menuStrip1.Size = new System.Drawing.Size(694, 24);
@@ -95,9 +96,16 @@ partial class MainPanel
         // settings_spiceProxy
         // 
         this.settings_spiceProxy.Name = "settings_spiceProxy";
-        this.settings_spiceProxy.Size = new System.Drawing.Size(137, 22);
+        this.settings_spiceProxy.Size = new System.Drawing.Size(136, 22);
         this.settings_spiceProxy.Text = "SPICE Proxy";
         this.settings_spiceProxy.Click += new System.EventHandler(this.OpenSpiceProxyPanel);
+        // 
+        // aboutToolStripMenuItem
+        // 
+        this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+        this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+        this.aboutToolStripMenuItem.Text = "About";
+        this.aboutToolStripMenuItem.Click += new System.EventHandler(this.click_openAbout);
         // 
         // MainPanel
         // 
@@ -122,6 +130,8 @@ partial class MainPanel
         this.ResumeLayout(false);
         this.PerformLayout();
     }
+
+    private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
 
     private System.Windows.Forms.ToolStripMenuItem rootSettings;
     private System.Windows.Forms.ToolStripMenuItem settings_spiceProxy;

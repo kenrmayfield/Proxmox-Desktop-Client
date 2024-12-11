@@ -132,6 +132,12 @@
         <Compile Include="Classes\pveAPI\objects\dataObjects.cs" />
         <Compile Include="Classes\pveAPI\UserPermissions.cs" />
         <Compile Include="Classes\Ticker.cs" />
+        <Compile Include="Panels\About.cs">
+          <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="Panels\About.Designer.cs">
+          <DependentUpon>About.cs</DependentUpon>
+        </Compile>
         <Compile Include="Panels\ClientLogin.cs">
           <SubType>Form</SubType>
         </Compile>
@@ -154,6 +160,9 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
         <EmbeddedResource Include="Classes\consoles\NoVNCClient.resx">
           <DependentUpon>NoVNCClient.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Panels\About.resx">
+          <DependentUpon>About.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="Panels\ClientLogin.resx">
           <DependentUpon>ClientLogin.cs</DependentUpon>
@@ -192,6 +201,7 @@
       <Content Include="README.md" />
       <Content Include="Resources\Icons\default-icon.ico" />
       <Content Include="Resources\Icons\default.png" />
+      <Content Include="Resources\Icons\github.png" />
       <Content Include="Resources\icons_dots.png" />
       <Content Include="Resources\lxc_logo.png" />
       <Content Include="Resources\vm_logo.png" />

@@ -370,7 +370,7 @@ public partial class MainPanel : Form
         _notifyIcon = new NotifyIcon();
         _notifyIcon.Icon = Properties.Resources.icon_proxmox; // Set your desired icon here
         _notifyIcon.Visible = true;
-
+        _notifyIcon.DoubleClick += (sender, args) => Restore_Click(null, null);
         _contextMenu = new ContextMenuStrip();
         _contextMenu.Items.Add("Restore", null, Restore_Click);
         _contextMenu.Items.Add("Exit", null, ActionExitApplication);
@@ -390,5 +390,9 @@ public partial class MainPanel : Form
         Show();
         WindowState = FormWindowState.Normal;
     }
-    
+
+    private void click_openAbout(object sender, EventArgs e)
+    {
+        (new About()).ShowDialog();
+    }
 }

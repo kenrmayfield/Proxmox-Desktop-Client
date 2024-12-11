@@ -16,7 +16,7 @@ namespace Proxmox_Desktop_Client
         public static Configurations                _Config = new Configurations();
         public static Dictionary<string, object>    _Panels = new Dictionary<string, object>();
         public static ApiClient                     _Api;
-    
+        public static string                        AppVersion = "1.2.6";
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
