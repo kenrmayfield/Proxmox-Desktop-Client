@@ -91,7 +91,8 @@ public partial class About : Form
         }
         catch (Exception ex)
         {
-            throw new Exception($"An error occurred while fetching the latest release: {ex.Message}");
+            Program.DebugPoint($"An error occurred while fetching the latest release: {ex.Message}");
+            return "GitHub 404";
         }
     }
 }
