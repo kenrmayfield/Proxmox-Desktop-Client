@@ -396,4 +396,9 @@ public partial class MainPanel : Form
     {
         (new About()).ShowDialog();
     }
+
+    private void webGUI_Click(object sender, EventArgs e)
+    {
+        (new WebGUI()).ShowDialog();
+    }
 }
