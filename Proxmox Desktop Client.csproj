@@ -214,11 +214,14 @@
       <Content Include="Resources\icons_dots.png" />
       <Content Include="Resources\lxc_logo.png" />
       <Content Include="Resources\vm_logo.png" />
-      <None Include="Screenshots\Screenshot - Console Menu.png" />
-      <None Include="Screenshots\Screenshot - Login Window.png" />
-      <None Include="Screenshots\Screenshot - Main Window.png" />
-      <None Include="Screenshots\Screenshot - Power Menu.png" />
-      <None Include="Screenshots\Screenshot - Spice Proxy.png" />
+      <Content Include="Screenshots\Capture-1.PNG" />
+      <Content Include="Screenshots\Capture-2.PNG" />
+      <Content Include="Screenshots\Capture-3.PNG" />
+      <Content Include="Screenshots\Capture-4.PNG" />
+      <Content Include="Screenshots\Capture-5.PNG" />
+      <Content Include="Screenshots\Capture-6.PNG" />
+      <Content Include="Screenshots\Capture-7.PNG" />
+      <Content Include="Screenshots\Capture-8.PNG" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Resources\Images\" />
