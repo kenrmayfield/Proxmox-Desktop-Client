@@ -55,7 +55,6 @@ public partial class MainPanel : Form
         machinePanel.Controls.Clear();
         ProcessMachineList();
     }
-
     
     // Gets Available Virtual Machines from API
     public void GetAllMachines()
@@ -326,13 +325,15 @@ public partial class MainPanel : Form
     // Reopen ClientLogin Window on Close
     protected override void OnFormClosing(FormClosingEventArgs e)
     {
+        base.OnFormClosing(e);
         _refreshTimer.Stop();
         _refreshTimer.Dispose();
+        _refreshTicket.Stop();
+        _refreshTicket.Dispose();
         _notifyIcon.Dispose();
         var theWindow = (ClientLogin)Program._Panels["ClientLogin"];
         theWindow.Show();
         theWindow.LoadCredentials();
-        base.OnFormClosing(e);
     }
     
     // Opening New Windows(Panels)

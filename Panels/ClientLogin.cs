@@ -175,7 +175,6 @@ namespace Proxmox_Desktop_Client.Panels
             textBox_otp.Visible = checkBox_otp.Checked;
         }
 
-
         private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))

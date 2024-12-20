@@ -214,8 +214,7 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
             }
             
         }
-        
-         public string GetRequest(string path)
+        public string GetRequest(string path)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, $"{path}"))
             {
@@ -243,7 +242,6 @@ namespace Proxmox_Desktop_Client.Classes.pveAPI
 
             return null;
         }
-        
         public string PostRequest(string path, Dictionary<string, string> postData)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Post, $"{path}"))
