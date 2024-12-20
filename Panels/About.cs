@@ -20,6 +20,7 @@ public partial class About : Form
 
         // Call the asynchronous method to update the release label
         UpdateReleaseLabelAsync();
+        CenterToParent();
     }
     private async void UpdateReleaseLabelAsync()
     {
