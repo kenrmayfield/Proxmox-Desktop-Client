@@ -52,6 +52,10 @@ namespace Proxmox_Desktop_Client
             {
                 Console.WriteLine(content);
             }
+            else
+            {
+                MessageBox.Show(content, "Program Error");
+            }
         }
         
     }
